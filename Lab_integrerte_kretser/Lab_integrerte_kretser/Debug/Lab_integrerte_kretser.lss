@@ -3,27 +3,29 @@ Lab_integrerte_kretser.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000000  00800100  00800100  00000108  2**0
+  0 .data         00000000  00800100  00800100  00000134  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         000000b4  00000000  00000000  00000054  2**1
+  1 .text         000000e0  00000000  00000000  00000054  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .comment      00000030  00000000  00000000  00000108  2**0
+  2 .comment      00000030  00000000  00000000  00000134  2**0
                   CONTENTS, READONLY
-  3 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00000138  2**2
+  3 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00000164  2**2
                   CONTENTS, READONLY
-  4 .debug_aranges 00000048  00000000  00000000  00000174  2**0
+  4 .debug_aranges 00000048  00000000  00000000  000001a0  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_info   0000075d  00000000  00000000  000001bc  2**0
+  5 .debug_info   000007d3  00000000  00000000  000001e8  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_abbrev 000006af  00000000  00000000  00000919  2**0
+  6 .debug_abbrev 000006c9  00000000  00000000  000009bb  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   000002c8  00000000  00000000  00000fc8  2**0
+  7 .debug_line   000002e8  00000000  00000000  00001084  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_frame  00000074  00000000  00000000  00001290  2**2
+  8 .debug_frame  00000074  00000000  00000000  0000136c  2**2
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    000003d1  00000000  00000000  00001304  2**0
+  9 .debug_str    000003d6  00000000  00000000  000013e0  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_ranges 00000038  00000000  00000000  000016d5  2**0
+ 10 .debug_loc    0000001e  00000000  00000000  000017b6  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_ranges 00000038  00000000  00000000  000017d4  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -65,8 +67,8 @@ Disassembly of section .text:
   76:	d4 e0       	ldi	r29, 0x04	; 4
   78:	de bf       	out	0x3e, r29	; 62
   7a:	cd bf       	out	0x3d, r28	; 61
-  7c:	0e 94 50 00 	call	0xa0	; 0xa0 <main>
-  80:	0c 94 58 00 	jmp	0xb0	; 0xb0 <_exit>
+  7c:	0e 94 56 00 	call	0xac	; 0xac <main>
+  80:	0c 94 6e 00 	jmp	0xdc	; 0xdc <_exit>
 
 00000084 <__bad_interrupt>:
   84:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
@@ -92,25 +94,51 @@ void atmega162_usart_flush() {
   9c:	8c b9       	out	0x0c, r24	; 12
   9e:	08 95       	ret
 
-000000a0 <main>:
+000000a0 <atmega162_usart_receive>:
+  a0:	5f 9b       	sbis	0x0b, 7	; 11
+  a2:	02 c0       	rjmp	.+4      	; 0xa8 <atmega162_usart_receive+0x8>
+  a4:	8c b1       	in	r24, 0x0c	; 12
+  a6:	08 95       	ret
+  a8:	80 e0       	ldi	r24, 0x00	; 0
+  aa:	08 95       	ret
+
+000000ac <main>:
 
 
 int main(void)
 {
     /* Replace with your application code */
 	DDRA = 0xFF;
-  a0:	8f ef       	ldi	r24, 0xFF	; 255
-  a2:	8a bb       	out	0x1a, r24	; 26
+  ac:	8f ef       	ldi	r24, 0xFF	; 255
+  ae:	8a bb       	out	0x1a, r24	; 26
 	atmega162_usart_init();
-  a4:	0e 94 44 00 	call	0x88	; 0x88 <atmega162_usart_init>
-	while(1){
-	 atmega162_usart_transmit(65);
-  a8:	81 e4       	ldi	r24, 0x41	; 65
-  aa:	0e 94 4c 00 	call	0x98	; 0x98 <atmega162_usart_transmit>
-  ae:	fc cf       	rjmp	.-8      	; 0xa8 <main+0x8>
+  b0:	0e 94 44 00 	call	0x88	; 0x88 <atmega162_usart_init>
+	while (1)
+	{
+		unsigned char byte = atmega162_usart_receive();
+  b4:	0e 94 50 00 	call	0xa0	; 0xa0 <atmega162_usart_receive>
+  b8:	c8 2f       	mov	r28, r24
+		if (byte) {
+  ba:	88 23       	and	r24, r24
+  bc:	d9 f3       	breq	.-10     	; 0xb4 <main+0x8>
+			atmega162_usart_transmit(byte);
+  be:	0e 94 4c 00 	call	0x98	; 0x98 <atmega162_usart_transmit>
+			atmega162_usart_transmit(byte);
+  c2:	8c 2f       	mov	r24, r28
+  c4:	0e 94 4c 00 	call	0x98	; 0x98 <atmega162_usart_transmit>
+			atmega162_usart_transmit(byte);
+  c8:	8c 2f       	mov	r24, r28
+  ca:	0e 94 4c 00 	call	0x98	; 0x98 <atmega162_usart_transmit>
+			atmega162_usart_transmit(byte);
+  ce:	8c 2f       	mov	r24, r28
+  d0:	0e 94 4c 00 	call	0x98	; 0x98 <atmega162_usart_transmit>
+			atmega162_usart_transmit(byte);
+  d4:	8c 2f       	mov	r24, r28
+  d6:	0e 94 4c 00 	call	0x98	; 0x98 <atmega162_usart_transmit>
+  da:	ec cf       	rjmp	.-40     	; 0xb4 <main+0x8>
 
-000000b0 <_exit>:
-  b0:	f8 94       	cli
+000000dc <_exit>:
+  dc:	f8 94       	cli
 
-000000b2 <__stop_program>:
-  b2:	ff cf       	rjmp	.-2      	; 0xb2 <__stop_program>
+000000de <__stop_program>:
+  de:	ff cf       	rjmp	.-2      	; 0xde <__stop_program>

@@ -24,10 +24,18 @@ int main(void)
     /* Replace with your application code */
 	DDRA = 0xFF;
 	atmega162_usart_init();
-	while(1){
-	 atmega162_usart_transmit(65);
-	//Blink_Led();
+	while (1)
+	{
+		unsigned char byte = atmega162_usart_receive();
+		if (byte) {
+			atmega162_usart_transmit(byte);
+			atmega162_usart_transmit(byte);
+			atmega162_usart_transmit(byte);
+			atmega162_usart_transmit(byte);
+			atmega162_usart_transmit(byte);
+		}
 	}
+	
 }
 
 
