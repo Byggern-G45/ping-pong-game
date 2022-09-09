@@ -8,12 +8,13 @@
 //#define F_CPU 16000000UL // 16 MHz clock speed
 //#endif
 
+
 #define FOSC 4915200UL// Clock Speed
 #define BAUD 9600UL
 #define Pre_scaler 16UL
 #define MYUBRR FOSC/(16UL*BAUD)-1UL
 
-
+#include "atmega162_usart.c"
 #include <avr/io.h>
 //#include <util/delay.h>
 

@@ -19,7 +19,7 @@ unsigned char atmega162_usart_receive() {
     if (UCSR0A & (1<<RXC0)) { // If character has been received
         return UDR0;          // Get and return character from buffer
     }
-    return '\0'               // Notify no character received
+    return '\0';               // Notify no character received
 }
 
 void atmega162_usart_flush() {
