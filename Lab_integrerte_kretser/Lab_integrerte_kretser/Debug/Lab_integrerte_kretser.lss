@@ -3,29 +3,27 @@ Lab_integrerte_kretser.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000000  00800100  00800100  00000122  2**0
+  0 .data         00000000  00800100  00800100  00000108  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         000000ce  00000000  00000000  00000054  2**1
+  1 .text         000000b4  00000000  00000000  00000054  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .comment      00000030  00000000  00000000  00000122  2**0
+  2 .comment      00000030  00000000  00000000  00000108  2**0
                   CONTENTS, READONLY
-  3 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00000154  2**2
+  3 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00000138  2**2
                   CONTENTS, READONLY
-  4 .debug_aranges 00000058  00000000  00000000  00000190  2**0
+  4 .debug_aranges 00000048  00000000  00000000  00000174  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_info   000007fb  00000000  00000000  000001e8  2**0
+  5 .debug_info   0000075d  00000000  00000000  000001bc  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_abbrev 000006be  00000000  00000000  000009e3  2**0
+  6 .debug_abbrev 000006af  00000000  00000000  00000919  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   00000326  00000000  00000000  000010a1  2**0
+  7 .debug_line   000002c8  00000000  00000000  00000fc8  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_frame  00000094  00000000  00000000  000013c8  2**2
+  8 .debug_frame  00000074  00000000  00000000  00001290  2**2
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    000003f5  00000000  00000000  0000145c  2**0
+  9 .debug_str    000003d1  00000000  00000000  00001304  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_loc    0000004e  00000000  00000000  00001851  2**0
-                  CONTENTS, READONLY, DEBUGGING
- 11 .debug_ranges 00000048  00000000  00000000  0000189f  2**0
+ 10 .debug_ranges 00000038  00000000  00000000  000016d5  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -67,85 +65,52 @@ Disassembly of section .text:
   76:	d4 e0       	ldi	r29, 0x04	; 4
   78:	de bf       	out	0x3e, r29	; 62
   7a:	cd bf       	out	0x3d, r28	; 61
-  7c:	0e 94 58 00 	call	0xb0	; 0xb0 <main>
-  80:	0c 94 65 00 	jmp	0xca	; 0xca <_exit>
+  7c:	0e 94 50 00 	call	0xa0	; 0xa0 <main>
+  80:	0c 94 58 00 	jmp	0xb0	; 0xb0 <_exit>
 
 00000084 <__bad_interrupt>:
   84:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
 
-00000088 <USART_Init>:
-	};
+00000088 <atmega162_usart_init>:
+void atmega162_usart_flush() {
+    unsigned char dump;
+    while (UCSR0A & (1<<RXC0)) {
+        dump = UDR0;
+    } 
+  88:	10 bc       	out	0x20, r1	; 32
+  8a:	8f e1       	ldi	r24, 0x1F	; 31
+  8c:	89 b9       	out	0x09, r24	; 9
+  8e:	88 e1       	ldi	r24, 0x18	; 24
+  90:	8a b9       	out	0x0a, r24	; 10
+  92:	8e e8       	ldi	r24, 0x8E	; 142
+  94:	80 bd       	out	0x20, r24	; 32
+  96:	08 95       	ret
 
-void USART_Init( unsigned int ubrr )
-{
-	/* Set baud rate */
-	UBRR0H = (unsigned char)(ubrr>>8);
-  88:	90 bd       	out	0x20, r25	; 32
-	UBRR0L = (unsigned char)ubrr;
-  8a:	89 b9       	out	0x09, r24	; 9
-	/* Enable receiver and transmitter */
-	UCSR0B = (1<<RXEN0)|(1<<TXEN0);
-  8c:	88 e1       	ldi	r24, 0x18	; 24
-  8e:	8a b9       	out	0x0a, r24	; 10
-	/* Set frame format: 8data, 2stop bit */
-	UCSR0C = (1<<URSEL0)|(1<<USBS0)|(3<<UCSZ00);
-  90:	8e e8       	ldi	r24, 0x8E	; 142
-  92:	80 bd       	out	0x20, r24	; 32
-  94:	08 95       	ret
-
-00000096 <USART_Transmit>:
-}
-void USART_Transmit( unsigned int data )
-{
-  96:	9c 01       	movw	r18, r24
-	/* Wait for empty transmit buffer */
-	while ( !( UCSR0A & (1<<UDRE0)) 
+00000098 <atmega162_usart_transmit>:
   98:	5d 9b       	sbis	0x0b, 5	; 11
-  9a:	fe cf       	rjmp	.-4      	; 0x98 <USART_Transmit+0x2>
-	);
-	
-	/* Copy 9th bit to TXB8 */
-	UCSR0B &= ~(1<<TXB80);
-  9c:	9a b1       	in	r25, 0x0a	; 10
-  9e:	9e 7f       	andi	r25, 0xFE	; 254
-  a0:	9a b9       	out	0x0a, r25	; 10
-	if ( data & 0x0100 )
-  a2:	30 ff       	sbrs	r19, 0
-  a4:	03 c0       	rjmp	.+6      	; 0xac <USART_Transmit+0x16>
-	UCSR0B |= (1<<TXB80);
-  a6:	8a b1       	in	r24, 0x0a	; 10
-  a8:	81 60       	ori	r24, 0x01	; 1
-  aa:	8a b9       	out	0x0a, r24	; 10
-	
-	/* Put data into buffer, sends the data */
-	UDR0 = data;
-  ac:	2c b9       	out	0x0c, r18	; 12
-  ae:	08 95       	ret
+  9a:	fe cf       	rjmp	.-4      	; 0x98 <atmega162_usart_transmit>
+  9c:	8c b9       	out	0x0c, r24	; 12
+  9e:	08 95       	ret
 
-000000b0 <main>:
+000000a0 <main>:
 
 
 int main(void)
 {
     /* Replace with your application code */
 	DDRA = 0xFF;
-  b0:	8f ef       	ldi	r24, 0xFF	; 255
-  b2:	8a bb       	out	0x1a, r24	; 26
-	USART_Init ( MYUBRR );
-  b4:	6f e1       	ldi	r22, 0x1F	; 31
-  b6:	70 e0       	ldi	r23, 0x00	; 0
-  b8:	80 e0       	ldi	r24, 0x00	; 0
-  ba:	90 e0       	ldi	r25, 0x00	; 0
-  bc:	0e 94 44 00 	call	0x88	; 0x88 <USART_Init>
+  a0:	8f ef       	ldi	r24, 0xFF	; 255
+  a2:	8a bb       	out	0x1a, r24	; 26
+	atmega162_usart_init();
+  a4:	0e 94 44 00 	call	0x88	; 0x88 <atmega162_usart_init>
 	while(1){
-	USART_Transmit(66);
-  c0:	82 e4       	ldi	r24, 0x42	; 66
-  c2:	90 e0       	ldi	r25, 0x00	; 0
-  c4:	0e 94 4b 00 	call	0x96	; 0x96 <USART_Transmit>
-  c8:	fb cf       	rjmp	.-10     	; 0xc0 <main+0x10>
+	 atmega162_usart_transmit(65);
+  a8:	81 e4       	ldi	r24, 0x41	; 65
+  aa:	0e 94 4c 00 	call	0x98	; 0x98 <atmega162_usart_transmit>
+  ae:	fc cf       	rjmp	.-8      	; 0xa8 <main+0x8>
 
-000000ca <_exit>:
-  ca:	f8 94       	cli
+000000b0 <_exit>:
+  b0:	f8 94       	cli
 
-000000cc <__stop_program>:
-  cc:	ff cf       	rjmp	.-2      	; 0xcc <__stop_program>
+000000b2 <__stop_program>:
+  b2:	ff cf       	rjmp	.-2      	; 0xb2 <__stop_program>

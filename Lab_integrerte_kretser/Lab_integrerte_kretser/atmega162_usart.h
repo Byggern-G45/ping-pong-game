@@ -22,7 +22,7 @@
     #define ATMEGA162_USART_BAUD 9600
 #endif
 #define ATMEGA162_USART_PRESCALER 16
-#define UBRR ATMEGA162_USART_FOSC/(ATMEGA162_USART_PRESCALER*ATMEGA162_USART_BAUD) - 1
+#define UBRR 31
 
 /**
  * @brief Initilizes the USART for transmit and receive with 8 data bits and 2 stop bits
