@@ -16,6 +16,8 @@
 
 #include "atmega162_usart.c"
 #include <avr/io.h>
+#include <stdio.h>
+//fdevopen(unsigned char atmega162_usart_transmit(), unsigned char atmega162_usart_receive())
 //#include <util/delay.h>
 
 
@@ -23,7 +25,9 @@ int main(void)
 {
     /* Replace with your application code */
 	DDRA = 0xFF;
+	fdevopen(atmega162_usart_transmit, atmega162_usart_receive);
 	atmega162_usart_init();
+	printf("Hello World");
 	while (1)
 	{
 		unsigned char byte = atmega162_usart_receive();
