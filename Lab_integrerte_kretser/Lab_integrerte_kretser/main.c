@@ -32,11 +32,11 @@ int main(void)
 	{
 		unsigned char byte = atmega162_usart_receive();
 		if (byte) {
-			atmega162_usart_transmit(byte);
-			atmega162_usart_transmit(byte);
-			atmega162_usart_transmit(byte);
-			atmega162_usart_transmit(byte);
-			atmega162_usart_transmit(byte);
+			printf("%c",byte);
+			printf("%c",byte);
+			printf("%c",byte);
+			printf("%c",byte);
+			printf("%c",byte);
 		}
 	}
 	
