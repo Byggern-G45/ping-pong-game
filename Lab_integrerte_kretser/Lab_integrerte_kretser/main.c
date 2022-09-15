@@ -25,7 +25,7 @@ int main(void)
 	DDRA = 0xFF;
 	atmega162_usart_init();
 	while(1){
-	 atmega162_usart_transmit(65);
+	 atmega162_usart_transmit(65); //sends character
 	//Blink_Led();
 	}
 }
