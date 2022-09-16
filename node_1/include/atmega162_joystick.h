@@ -7,6 +7,7 @@
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <stdio.h>
 
 #ifdef ATMEGA162_JOYSTICK_IMPORT
     #define EXTERN
@@ -20,14 +21,14 @@
 EXTERN void atmega162_joystick_init();
 
 /**
- * @brief 
+ * @brief Starts ADC conversion if another conversion is not currently happening
  */
 EXTERN void atmega162_joystick_start_conversion();
 
 /**
  * @brief 
  */
-EXTERN uint8_t atmega162_joystick_read();
+EXTERN void atmega162_joystick_read();
 
 #undef ATMEGA162_JOYSTICK_IMPORT
 #undef EXTERN
