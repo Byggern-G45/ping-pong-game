@@ -1,7 +1,7 @@
 /* atmega162_usart.c -- See atmega162_usart.h for info */
 
-#define atmega162_usart_IMPORT
-#include "atmega162_usart.h"
+#define ATMEGA162_USART_IMPORT
+#include "../include/atmega162_usart.h"
 
 void atmega162_usart_init() {
     UBRR0H = (unsigned char)(UBRR>>8);               // Set BAUD rate
@@ -19,12 +19,5 @@ unsigned char atmega162_usart_receive() {
     if (UCSR0A & (1<<RXC0)) { // If character has been received
         return UDR0;          // Get and return character from buffer
     }
-    return '\0';               // Notify no character received
-}
-
-void atmega162_usart_flush() {
-    unsigned char dump;
-    while (UCSR0A & (1<<RXC0)) {
-        dump = UDR0;
-    } 
+    return '\0';              // Notify no character received
 }

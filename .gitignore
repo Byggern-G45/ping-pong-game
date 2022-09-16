@@ -1,1 +1,10 @@
+# Editor config files
 .vscode
+.vs
+.idea
+
+# Microchip Studio project files
+Debug
+*.atsln
+*.xml
+*.cproj
