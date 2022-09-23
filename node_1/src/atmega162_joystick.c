@@ -2,17 +2,17 @@
 
 #define ATMEGA162_JOYSTICK_IMPORT
 #include "../include/atmega162_joystick.h"
+//#include "util/delay.h"
+//#define F_CPU 49000000000
 
 #define ADC_START_ADDRESS (volatile char*)0x1400
 //volatile char* ADC_START_ADDRESS = 0x1400;
 #define ATMEGA162_JOYSTICK_CHANNELS 4
 
-uint8_t temp;
-
 struct{
 	volatile uint8_t position[ATMEGA162_JOYSTICK_CHANNELS];
 	volatile uint8_t conversion_done;
-} joystick;
+}joystick;
 
 ISR(INT2_vect) {
 	atmega162_joystick_read();
@@ -51,24 +51,14 @@ void atmega162_joystick_start_conversion() {
 }
 
 void atmega162_joystick_read() {
-	if (PD7 == 1 && temp == 0){
-		//PORTD = (0<<PD7);
+	for (uint8_t i = 0; i < ATMEGA162_JOYSTICK_CHANNELS; i++){
+		PORTD = (0<<PD7);
 		uint8_t byte = (uint8_t)(*ADC_START_ADDRESS);
-		joystick.position[0] = byte;
-		printf("%d: %d\n", 0, byte);
-		temp = 1;
-		
+		joystick.position[i] = byte;
+	}
+	printf("Posisjon x = %d, y = %d, z = %d, # = %d\n", joystick.position[0],joystick.position[1],joystick.position[2],joystick.position[3]);
+		//_delay_us(10);
 		//PORTD = (1<<PD7);
-	}
-	else if (PD7 == 0 && temp == 1){
-		temp = 0;
-		printf("Wrong state");
-		atmega162_joystick_read();
-	}
-	else {
-		printf("Wrong state\n, %d", PD7);
-		atmega162_joystick_read();
-	}
 }
 
 /*

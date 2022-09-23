@@ -11,6 +11,7 @@ int main() {
 	atmega162_joystick_init();
 	printf("\n\r\n\rhello\n\r\n\r");
 	
+	
 	while (1) {
 		atmega162_joystick_start_conversion();
     }
