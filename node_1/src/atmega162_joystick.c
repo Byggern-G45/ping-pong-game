@@ -5,7 +5,9 @@
 
 #define ADC_START_ADDRESS (volatile char*)0x1400
 //volatile char* ADC_START_ADDRESS = 0x1400;
-#define ATMEGA162_JOYSTICK_CHANNELS 2
+#define ATMEGA162_JOYSTICK_CHANNELS 4
+
+uint8_t temp;
 
 struct{
 	volatile uint8_t position[ATMEGA162_JOYSTICK_CHANNELS];
@@ -42,19 +44,30 @@ void atmega162_joystick_init() {
 
 void atmega162_joystick_start_conversion() {
 	if (joystick.conversion_done) {
-		*ADC_START_ADDRESS = (0<<0) | (1<<1) | (1<<2) | (1<<4);
+		*ADC_START_ADDRESS = 0x0;
 		joystick.conversion_done = 0;
 	}
 	
 }
 
 void atmega162_joystick_read() {
-	for (uint8_t i = 0; i < ATMEGA162_JOYSTICK_CHANNELS; i++){
+	if (PD7 == 1 && temp == 0){
 		//PORTD = (0<<PD7);
 		uint8_t byte = (uint8_t)(*ADC_START_ADDRESS);
-		joystick.position[i] = byte;
-		printf("\n\r%d: %d \n\r", i, byte);
+		joystick.position[0] = byte;
+		printf("%d: %d\n", 0, byte);
+		temp = 1;
+		
 		//PORTD = (1<<PD7);
+	}
+	else if (PD7 == 0 && temp == 1){
+		temp = 0;
+		printf("Wrong state");
+		atmega162_joystick_read();
+	}
+	else {
+		printf("Wrong state\n, %d", PD7);
+		atmega162_joystick_read();
 	}
 }
 
