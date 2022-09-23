@@ -19,7 +19,23 @@ ISR(INT2_vect) {
 	joystick.conversion_done = 1;
 }
 
-ISR(INT1_vect) {}
+ISR(INT1_vect) {
+	for (uint8_t i =0; i<=254;i++)
+	{
+		printf("HELG!\n");
+	}
+	
+}
+ISR(INT0_vect) {
+	for (uint8_t i =0; i<=254;i++)
+	{
+		printf("TISS!TISS!TISS!TISS!TISS!TISS!TISS!TISS!TISS!TISS!TISS!TISS!TISS!TISS!TISS!TISS!TISS!TISS!TISS!TISS!TISS!TISS!TISS!TISS!TISS!TISS!TISS!TISS!TISS!TISS!TISS!TISS!TISS!TISS!TISS!TISS!TISS!TISS!TISS!TISS!TISS!TISS!TISS!TISS!TISS!TISS!TISS!\n");
+	}
+	
+}
+
+
+
 // ISR(INT2_vect) {}
 
 void atmega162_joystick_init() {
@@ -31,12 +47,12 @@ void atmega162_joystick_init() {
 	TCCR3B |= (1<<WGM33) | (1<<CS30);
 	
 	cli();								// Disable global interrupt to hinder unwanted interrupt
-	/*
+	
 	MCUCR |= (1<<ISC01) | (1<<ISC00);	// Activate INT0 on rising edge
 	MCUCR |= (1<<ISC11) | (1<<ISC10);	// Activate INT1 on rising edge
 	GICR |= (1<<INT0) | (1<<INT1);		// Enable INT0 and INT1
 	sei();								// Enable global interrupt
-	*/
+	
 	EMCUCR |= (1<<ISC2);	// Activate INT2 on rising edge
 	GICR |= (1<<INT2);		// Enable INT2
 	sei();
@@ -52,11 +68,11 @@ void atmega162_joystick_start_conversion() {
 
 void atmega162_joystick_read() {
 	for (uint8_t i = 0; i < ATMEGA162_JOYSTICK_CHANNELS; i++){
-		PORTD = (0<<PD7);
 		uint8_t byte = (uint8_t)(*ADC_START_ADDRESS);
 		joystick.position[i] = byte;
-	}
-	printf("Posisjon x = %d, y = %d, z = %d, # = %d\n", joystick.position[0],joystick.position[1],joystick.position[2],joystick.position[3]);
+		}
+	printf("Posisjon x = %d, y = %d, z = %d, # = %d\n", joystick.position[0]*100/255,joystick.position[1],joystick.position[2],joystick.position[3]);
+	
 		//_delay_us(10);
 		//PORTD = (1<<PD7);
 }
