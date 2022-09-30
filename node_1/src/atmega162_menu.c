@@ -21,6 +21,13 @@ const char* MENU301 PROGMEM = "Submenu 1 of menu 3";
 const char* MENU302 PROGMEM = "Submenu 2 of menu 3";
 const char* MENU303 PROGMEM = "Submenu 3 of menu 3";
 
+/*
+PGM_P const MENU_TABLE PROGMEM = {
+    MENU100, 
+    MENU200, 
+    MENU300
+};
+*/
 const char** MENU_TABLE PROGMEM = {
     MENU100, 
     MENU200, 
@@ -50,4 +57,7 @@ void menu101() {
     
 }
 
-// pgm_read_byte(&MENU_TABLE_SIZE[0]); // 3   
+void menu_loop() {
+    pgm_read_word(&MENU_TABLE_SIZE[0]); // 3
+}
+   

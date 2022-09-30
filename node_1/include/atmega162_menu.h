@@ -6,12 +6,15 @@
 #define ATMEGA162_MENU_H
 
 #include <avr/io.h>
+#include <avr/pgmspace.h>
 
 #ifdef ATMEGA162_MENU_IMPORT
     #define EXTERN
 #else
     #define EXTERN extern
 #endif
+
+void menu_loop();
 
 void menu101();
 void menu102();
