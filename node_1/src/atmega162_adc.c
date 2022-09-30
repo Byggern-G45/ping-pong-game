@@ -25,9 +25,7 @@ ISR(INT2_vect) {
  * 		  Triggers on rising edge of PB0.
  */
 ISR(INT1_vect) {
-	for (uint8_t i = 0; i <= 254; i++) {
-		printf("HELG!\n");
-	}	
+	
 }
 
 /**
@@ -35,9 +33,7 @@ ISR(INT1_vect) {
  * 		  Triggers on rising edge of PB1.
  */
 ISR(INT0_vect) {
-	for (uint8_t i = 0; i <= 254; i++) {
-		printf("TISS!\n");
-	}
+
 }
 
 void adc_init() {
@@ -81,18 +77,22 @@ void _adc_read() {
 	joystick.position[1] = (uint8_t)(*ADC_ADDRESS);  // Read ch1 joystock y position
 	left_slider.position = (uint8_t)(*ADC_ADDRESS);  // Read ch2 slider 1 position
 	right_slider.position = (uint8_t)(*ADC_ADDRESS); // Read ch3 slider 2 position
-	/* // This is not working properly
-	if (joystick.position[0] < joystick.correction[0]) {
-		joystick.position[0] = 0;
+}
+
+void _calculate_direction(uint8_t* position) {
+	uint8_t is_horizontal = (position[1] < 50) && (position[1] > -50);
+	uint8_t is_vertical = (position[0] < 50) && (position[0] > -50);
+	if ((position[1] > 50) && is_vertical) {
+		joystick.direction = UP;
+	} else if ((position[1] < -50) && is_vertical) {
+		joystick.direction = DOWN;
+	} else if ((position[0] > 50) && is_horizontal) {
+		joystick.direction = RIGHT;
+	} else if ((position[0] < -50) && is_horizontal) {
+		joystick.direction = LEFT;
 	} else {
-		joystick.position[0] -= joystick.correction[0]; // Subtract correction
+		joystick.direction = NEUTRAL;
 	}
-	if (joystick.position[1] < joystick.correction[1]) {
-		joystick.position[1] = 0;
-	} else {
-		joystick.position[1] -= joystick.correction[1]; // Subtract correction
-	}
-	*/
 }
 
 int8_t to_percentage(uint8_t byte) {

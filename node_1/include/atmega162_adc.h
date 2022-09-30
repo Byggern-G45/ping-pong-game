@@ -61,6 +61,13 @@ EXTERN uint8_t joystick_button_read();
 void _joystick_calibrate();
 
 /**
+ * @brief Calculates the direction of the joystick based on the percentage position
+ * 
+ * @param position The position of the joystick in percentage
+ */
+void _calculate_direction(uint8_t* position);
+
+/**
  * @brief Maps a value between 0-255 to 0-100
  * 
  * @param byte Value to be mapped
