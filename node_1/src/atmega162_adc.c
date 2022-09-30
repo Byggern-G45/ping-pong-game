@@ -5,23 +5,14 @@
 
 #define ADC_ADDRESS (volatile char*)0x1400
 
-typedef enum direction {LEFT, RIGHT, UP, DOWN, NEUTRAL};
-
 static volatile uint8_t conversion_done;
-struct adc {
-	volatile uint8_t position[2];
-	volatile direction direction;
-	volatile uint8_t correction[2];
-}
-struct adc joystick;
-struct adc slider;
 
 ISR(INT2_vect) {
-	atmega162_joystick_read();
+	_joystick_read();
 	conversion_done = 1;
 }
 
-void atmega162_adc_init() {
+void adc_init() {
 	DDRB |= (0<<DDB0);						 // Set PD2 as input for joystick button
 	PORTB |= (1<<PORTB0);					 // Enable pull-up resistor for joystick button
 
@@ -40,44 +31,36 @@ void atmega162_adc_init() {
 	sei();								// Enable global interrupt
 
 	conversion_done = 1;
-	atmega162_joystick_calibrate();
+	_joystick_calibrate();
 }
 
-void atmega162_joystick_calibrate() {
-	atmega162_adc_start_conversion();
+void _joystick_calibrate() {
+	adc_start_conversion();
 	while (conversion_done == 0);
 	joystick.correction[0] = joystick.position[0];
 	joystick.correction[1] = joystick.position[1];	
 }
 
-void atmega162_adc_start_conversion() {
+void adc_start_conversion() {
 	if (conversion_done) { // If conversion is done, start new conversion
 		*ADC_ADDRESS = 0x0; 		// ADC is hardwired, so we do not care about the value
 		conversion_done = 0;
 	}	
 }
 
-void atmega162_adc_read() {
-	joystick.position[0] = (uint8_t)(*ADC_ADDRESS);	// Read ch0 joystick x position
-	joystick.position[1] = (uint8_t)(*ADC_ADDRESS); // Read ch1 joystock y position
-	slider.position[0] = (uint8_t)(*ADC_ADDRESS); 	// Read ch2
-	slider.position[1] = (uint8_t)(*ADC_ADDRESS); 	// Read ch3
-	joystick.position[0] -= joystick.correction[0];	// Subtract correction
-	joystick.position[1] -= joystick.correction[1];	// Subtract correction
+void _adc_read() {
+	joystick.position[0] = (uint8_t)(*ADC_ADDRESS);	 // Read ch0 joystick x position
+	joystick.position[1] = (uint8_t)(*ADC_ADDRESS);  // Read ch1 joystock y position
+	left_slider.position = (uint8_t)(*ADC_ADDRESS);  // Read ch2 slider 1 position
+	right_slider.position = (uint8_t)(*ADC_ADDRESS); // Read ch3 slider 2 position
+	joystick.position[0] -= joystick.correction[0];	 // Subtract correction
+	joystick.position[1] -= joystick.correction[1];	 // Subtract correction
 }
 
-uint8_t to_percentage(uint8_t byte) {
-    return byte*100/255;
+int8_t to_percentage(uint8_t byte) {
+    return byte*200/255 - 100;
 }
 
-uint8_t atmega162_joystick_button_read() {
+uint8_t joystick_button_read() {
 	return (PINB & (1<<PB0)); // Return 1 if button is pressed, 0 if not
 }
-
-/*
-void adc_to_angle(uint8_t A0, uint8_t A1){
-	
-	int x = 
-	int y =
-}
-*/

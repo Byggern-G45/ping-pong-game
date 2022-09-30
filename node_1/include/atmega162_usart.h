@@ -23,21 +23,21 @@
 /**
  * @brief Initilizes USART for transmit and receive with 8 data bits and 2 stop bits
  */
-EXTERN void atmega162_usart_init();
+EXTERN void usart_init();
 
 /**
  * @brief Transmits one 8-bit ASCII character over USART
  * 
  * @param character ASCII character
  */
-EXTERN void atmega162_usart_transmit(unsigned char character);
+EXTERN void usart_transmit(unsigned char character);
 
 /**
  * @brief Checks incomming USART buffer for ASCII character. Returns NULL if none
  * 
  * @return unsigned char, ASCII character
  */
-EXTERN unsigned char atmega162_usart_receive();
+EXTERN unsigned char usart_receive();
 
 #undef ATMEGA162_USART_IMPORT
 #undef EXTERN
