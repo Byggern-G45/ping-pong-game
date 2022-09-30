@@ -5,14 +5,14 @@
 #include <stdio.h>	// Needed for printf
 
 int main() {	
-	fdevopen(atmega162_usart_transmit, atmega162_usart_receive); // Enable printf to JTAG
-	atmega162_usart_init();
-	atmega162_sram_init();
-	atmega162_joystick_init();
+	fdevopen(usart_transmit, usart_receive); // Enable printf to JTAG
+	usart_init();
+	sram_init();
+	adc_init();
 	printf("\n\r\n\rhello\n\r\n\r");
 	
 	
 	while (1) {
-		atmega162_joystick_start_conversion();
+		adc_start_conversion();
     }
 }

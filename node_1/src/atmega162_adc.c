@@ -1,68 +1,78 @@
-/* atmega162_sram.c -- See atmega162_sram.h for info */
+/* atmega162_adc.c -- See atmega162_adc.h for info */
 
-#define ATMEGA162_JOYSTICK_IMPORT
-#include "../include/atmega162_joystick.h"
+#define ATMEGA162_ADC_IMPORT
+#include "../include/atmega162_adc.h"
 
-#define ADC_START_ADDRESS (volatile char*)0x1400
-#define ATMEGA162_JOYSTICK_CHANNELS 4
+#define ADC_ADDRESS (volatile char*)0x1400
 
-struct{
-	volatile uint8_t position[ATMEGA162_JOYSTICK_CHANNELS];
-	volatile uint8_t conversion_done;
-}joystick;
+static volatile uint8_t conversion_done;
 
 ISR(INT2_vect) {
-	atmega162_joystick_read();
-	joystick.conversion_done = 1;
+	_adc_read();
+	conversion_done = 1;
 }
 
 ISR(INT1_vect) {
-	for (uint8_t i = 0; i <= 254;i++)
-	{
+	for (uint8_t i = 0; i <= 254; i++) {
 		printf("HELG!\n");
 	}
 	
 }
 ISR(INT0_vect) {
-	for (uint8_t i = 0; i < =254; i++)
-	{
+	for (uint8_t i = 0; i < =254; i++) {
 		printf("TISS!\n");
 	}
 }
 
+void adc_init() {
+	DDRB |= (0<<DDB0);						 // Set PD2 as input for joystick button
+	PORTB |= (1<<PORTB0);					 // Enable pull-up resistor for joystick button
 
-void atmega162_joystick_init() {
-	joystick.conversion_done = 1;
-	DDRD |= (1<<DDD4);					// Set Clk as output
-	DDRD = (1 << PD4);
-	TCCR3A|=(1<<WGM30)|(1<<WGM31)|(1<<COM3A0)|(1<<CS30);
-	TCCR3B |= (1<<WGM33) | (1<<CS30);
+	DDRD |= (1<<DDD4);					 		 // Set Clk as output
+	TCCR3A |= (0<<COM3A1) | (1<<COM3A0)			 // Toggle on Compare Match.
+	TCCR3A |= (1<<WGM30) | (1<<WGM31); 			 // PWM, Phase Correct
+	TCCR3B |= (0<<WGM32) | (1<<WGM33);
+	TCCR3B |= (0<<CS32) | (0<<CS31) | (1<<CS30); // No Clk prescaling	
 	
 	cli();								// Disable global interrupt to hinder unwanted interrupt
-	
 	MCUCR |= (1<<ISC01) | (1<<ISC00);	// Activate INT0 on rising edge
 	MCUCR |= (1<<ISC11) | (1<<ISC10);	// Activate INT1 on rising edge
-	GICR |= (1<<INT0) | (1<<INT1);		// Enable INT0 and INT1
+	GICR |= (1<<INT0) | (1<<INT1);	// Enable INT0 and INT1								
+	EMCUCR |= (1<<ISC2);				// Activate INT2 on rising edge
+	GICR |= (1<<INT2);					// Enable INT2
 	sei();								// Enable global interrupt
-	
-	EMCUCR |= (1<<ISC2);	// Activate INT2 on rising edge
-	GICR |= (1<<INT2);		// Enable INT2
-	sei();
+
+	conversion_done = 1;
+	_joystick_calibrate();
 }
 
-void atmega162_joystick_start_conversion() {
-	if (joystick.conversion_done) {
-		*ADC_START_ADDRESS = 0x0;
-		joystick.conversion_done = 0;
-	}
-	
+void _joystick_calibrate() {
+	adc_start_conversion();
+	while (conversion_done == 0);
+	joystick.correction[0] = joystick.position[0];
+	joystick.correction[1] = joystick.position[1];	
 }
 
-void atmega162_joystick_read() {
-	for (uint8_t i = 0; i < ATMEGA162_JOYSTICK_CHANNELS; i++){
-		uint8_t byte = (uint8_t)(*ADC_START_ADDRESS);
-		joystick.position[i] = byte;
-		}
-		
-	printf("Posisjon x = %d, y = %d, z = %d, # = %d\n", joystick.position[0]*100/255,joystick.position[1],joystick.position[2],joystick.position[3]);
+void adc_start_conversion() {
+	if (conversion_done) { // If conversion is done, start new conversion
+		*ADC_ADDRESS = 0x0; 		// ADC is hardwired, so we do not care about the value
+		conversion_done = 0;
+	}	
+}
+
+void _adc_read() {
+	joystick.position[0] = (uint8_t)(*ADC_ADDRESS);	 // Read ch0 joystick x position
+	joystick.position[1] = (uint8_t)(*ADC_ADDRESS);  // Read ch1 joystock y position
+	left_slider.position = (uint8_t)(*ADC_ADDRESS);  // Read ch2 slider 1 position
+	right_slider.position = (uint8_t)(*ADC_ADDRESS); // Read ch3 slider 2 position
+	joystick.position[0] -= joystick.correction[0];	 // Subtract correction
+	joystick.position[1] -= joystick.correction[1];	 // Subtract correction
+}
+
+int8_t to_percentage(uint8_t byte) {
+    return byte*200/255 - 100;
+}
+
+uint8_t joystick_button_read() {
+	return (PINB & (1<<PB0)); // Return 1 if button is pressed, 0 if not
 }

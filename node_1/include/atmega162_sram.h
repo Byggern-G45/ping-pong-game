@@ -16,7 +16,7 @@
 /**
  * @brief Initilizes external SRAM
  */
-EXTERN void atmega162_sram_init();
+EXTERN void sram_init();
 
 #undef ATMEGA162_SRAM_IMPORT
 #undef EXTERN
