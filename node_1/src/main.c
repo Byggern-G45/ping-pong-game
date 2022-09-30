@@ -8,12 +8,14 @@
 int main() {
 	fdevopen(usart_transmit, usart_receive); // Enable printf to JTAG
 	usart_init();
-	sram_init();
+	//sram_init();
 	adc_init();
 	printf("\n\r\n\rhello\n\r\n\r");
+	oled_init();
+	printf("\n\r\n\rbye\n\r\n\r");
 	
 	
-	while (1) {
+	/*while (1) {
 		adc_start_conversion();
-    }
+    }*/
 }

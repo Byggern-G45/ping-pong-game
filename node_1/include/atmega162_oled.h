@@ -13,6 +13,10 @@
     #define EXTERN extern
 #endif
 
+void write_c(uint8_t command);
+
+void write_d(uint8_t command);
+
 void oled_init();
 
 void oled_reset();
