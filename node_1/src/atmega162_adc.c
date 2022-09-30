@@ -30,7 +30,7 @@ void adc_init() {
 
 	DDRD |= (1<<DDD4);					 		 // Set Clk as output
 	TCCR3A |= (0<<COM3A1) | (1<<COM3A0)			 // Toggle on Compare Match.
-	TCCR3A |= (1<<WGM30) | (1<<WGM31); 			 // PWM, Phase Correct
+	//TCCR3A |= (1<<WGM30) | (1<<WGM31); 			 // PWM, Phase Correct
 	TCCR3B |= (0<<WGM32) | (1<<WGM33);
 	TCCR3B |= (0<<CS32) | (0<<CS31) | (1<<CS30); // No Clk prescaling	
 	
