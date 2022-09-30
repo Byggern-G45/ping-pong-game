@@ -1,6 +1,6 @@
 #include "../include/atmega162_usart.h"
 #include "../include/atmega162_sram.h"
-#include "../include/atmega162_joystick.h"
+#include "../include/atmega162_adc.h"
 #include <avr/io.h>
 #include <stdio.h>	// Needed for printf
 
