@@ -13,7 +13,15 @@
     #define EXTERN extern
 #endif
 
-
+void menu101();
+void menu102();
+void menu103();
+void menu201();
+void menu202();
+void menu203();
+void menu301();
+void menu302();
+void menu303();
 
 #undef ATMEGA162_MENU_IMPORT
 #undef EXTERN

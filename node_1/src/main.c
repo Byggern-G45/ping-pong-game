@@ -2,6 +2,7 @@
 #include "../include/atmega162_sram.h"
 #include "../include/atmega162_adc.h"
 #include "../include/atmega162_oled.h"
+#include "../include/atmega162_menu.h"
 #include <avr/io.h>
 #include <stdio.h>	// Needed for printf
 
