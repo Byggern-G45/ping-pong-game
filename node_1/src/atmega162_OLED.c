@@ -2,16 +2,15 @@
 #define ATMEGA162_OLED_IMPORT
 #include "../include/atmega162_oled.h"
 
-volatile char* oled_command = 0x1000;
-volatile char* oled_data = 0x1200;
-
+#define OLED_CMD_ADDRESS (volatile char*)0x1000
+#define OLED_DATA_ADDRESS (volatile char*)0x1200
 
 void write_c(uint8_t command){
-    oled_command[0] = command;
+    *OLED_CMD_ADDRESS = (char)command;
 }
 
 void write_d(uint8_t data){
-    oled_data[0] = data;
+    *OLED_DATA_ADDRESS = (char)data;
 }
 
 
@@ -37,16 +36,16 @@ void oled_init() {
     write_c(0x00);
     write_c(0xa4); //out follows RAM content
     write_c(0xa6); //set normal display
-    write_c(0xaf); // display on
+	write_c(0xaf); // display on
 
     //Print an arrow
 	while(1){
-		write_d(0b00011000);
-		write_d(0b00011000);
-		write_d(0b01111110);
-		write_d(0b00111100);
-		write_d(0b00011000);
+		write_d(0b11111111);
 	}
+	//write_d(0b00011000);
+	//write_d(0b01111110);
+	//write_d(0b00111100);
+	//write_d(0b00011000);
 }
 
 /*void oled_addressing_mode(mode) {
