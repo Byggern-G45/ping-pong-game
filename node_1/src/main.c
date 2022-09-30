@@ -5,7 +5,7 @@
 #include <avr/io.h>
 #include <stdio.h>	// Needed for printf
 
-int main() {	
+int main() {
 	fdevopen(usart_transmit, usart_receive); // Enable printf to JTAG
 	usart_init();
 	sram_init();

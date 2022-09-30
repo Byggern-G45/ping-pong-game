@@ -8,6 +8,7 @@
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <stdio.h>
 
 #ifdef ATMEGA162_ADC_IMPORT
     #define EXTERN
@@ -15,27 +16,23 @@
     #define EXTERN extern
 #endif
 
-typedef enum direction_t {
+typedef enum {
     LEFT, 
     RIGHT, 
     UP, 
     DOWN, 
     NEUTRAL
-};
+} direction_t;
 
-typedef struct joystick_t {
+typedef struct {
 	volatile uint8_t position[2];
-	volatile uint8_t correction[2];
+	volatile int8_t correction[2];
     volatile direction_t direction;
-};
+} joystick_t;
 
-typedef struct slider_t {
+typedef struct {
     volatile uint8_t position;
-};
-
-joystick_t joystick;
-slider_t left_slider;
-slider_t right_slider;
+} slider_t;
 
 /**
  * @brief Initilizes Clk for ADC and enables interrupts
@@ -61,7 +58,7 @@ EXTERN uint8_t joystick_button_read();
  * @brief Calibrates the joystick by reading the current position and storing it as the
  *        correction value.
  */
-EXTERN void joystick_calibrate();
+void _joystick_calibrate();
 
 /**
  * @brief Maps a value between 0-255 to 0-100

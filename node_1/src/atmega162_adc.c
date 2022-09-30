@@ -5,6 +5,10 @@
 
 #define ADC_ADDRESS (volatile char*)0x1400
 
+joystick_t joystick;
+slider_t left_slider;
+slider_t right_slider;
+
 static volatile uint8_t conversion_done;
 
 /**
@@ -31,7 +35,7 @@ ISR(INT1_vect) {
  * 		  Triggers on rising edge of PB1.
  */
 ISR(INT0_vect) {
-	for (uint8_t i = 0; i < =254; i++) {
+	for (uint8_t i = 0; i <= 254; i++) {
 		printf("TISS!\n");
 	}
 }
@@ -41,15 +45,15 @@ void adc_init() {
 	PORTB |= (1<<PORTB0);					 // Enable pull-up resistor for joystick button
 
 	DDRD |= (1<<DDD4);					 	 // Set Clk as output
-	TCCR3A |= (0<<COM3A1) | (1<<COM3A0)	     // Toggle on Compare Match.
-	//TCCR3A |= (1<<WGM30) | (1<<WGM31); 	 // PWM, Phase Correct
+	TCCR3A |= (0<<COM3A1) | (1<<COM3A0);	 // Toggle on Compare Match.
+	TCCR3A |= (1<<WGM30) | (1<<WGM31); 	 	 // PWM, Phase Correct
 	TCCR3B |= (0<<WGM32) | (1<<WGM33);
 	TCCR3B |= (0<<CS32) | (0<<CS31) | (1<<CS30); // No Clk prescaling	
 	
 	cli();								// Disable global interrupt to hinder unwanted interrupt
 	MCUCR |= (1<<ISC01) | (1<<ISC00);	// Activate INT0 on rising edge
 	MCUCR |= (1<<ISC11) | (1<<ISC10);	// Activate INT1 on rising edge
-	GICR |= (1<<INT0) | (1<<INT1);		// Enable INT0 and INT1								
+	GICR |= (1<<INT0) | (1<<INT1);		// Enable INT0 and INT1			
 	EMCUCR |= (1<<ISC2);				// Activate INT2 on rising edge
 	GICR |= (1<<INT2);					// Enable INT2
 	sei();								// Enable global interrupt
@@ -61,8 +65,8 @@ void adc_init() {
 void _joystick_calibrate() {
 	adc_start_conversion();
 	while (conversion_done == 0);
-	joystick.correction[0] = joystick.position[0];
-	joystick.correction[1] = joystick.position[1];	
+	joystick.correction[0] = joystick.position[0] - 128;
+	joystick.correction[1] = joystick.position[1] - 128;
 }
 
 void adc_start_conversion() {
@@ -77,8 +81,18 @@ void _adc_read() {
 	joystick.position[1] = (uint8_t)(*ADC_ADDRESS);  // Read ch1 joystock y position
 	left_slider.position = (uint8_t)(*ADC_ADDRESS);  // Read ch2 slider 1 position
 	right_slider.position = (uint8_t)(*ADC_ADDRESS); // Read ch3 slider 2 position
-	joystick.position[0] -= joystick.correction[0];	 // Subtract correction
-	joystick.position[1] -= joystick.correction[1];	 // Subtract correction
+	/* // This is not working properly
+	if (joystick.position[0] < joystick.correction[0]) {
+		joystick.position[0] = 0;
+	} else {
+		joystick.position[0] -= joystick.correction[0]; // Subtract correction
+	}
+	if (joystick.position[1] < joystick.correction[1]) {
+		joystick.position[1] = 0;
+	} else {
+		joystick.position[1] -= joystick.correction[1]; // Subtract correction
+	}
+	*/
 }
 
 int8_t to_percentage(uint8_t byte) {
@@ -87,4 +101,20 @@ int8_t to_percentage(uint8_t byte) {
 
 uint8_t joystick_button_read() {
 	return (PINB & (1<<PB0)); // Return 1 if button is pressed, 0 if not
+}
+
+uint8_t get_joystick_x() {
+	return joystick.position[0];
+}
+
+uint8_t get_joystick_y() {
+	return joystick.position[1];
+}
+
+int8_t get_slider_left() {
+	return left_slider.position;
+}
+
+int8_t get_slider_right() {
+	return right_slider.position;
 }
