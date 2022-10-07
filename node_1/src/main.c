@@ -9,20 +9,21 @@
 #define MEM_ADD (char*) 0b000000000010
 
 int main() {
-	fdevopen(usart_transmit, usart_receive); // Enable printf to JTAG
+	fdevopen(usart_transmit, usart_receive); // Enable printf to JTAGs
 	usart_init();
 	sram_init();
-	adc_init();
+	//sram_test();
+	//adc_init();
+	printf("\n\r\n\rhello\n\r\n\r");
+	oled_init();
+	oled_reset();
 	printf("\n\r\n\rhello\n\r\n\r");
 	
 	//sram_test();
 	
-	
-	while (1) {
-		adc_start_conversion();
-		printf("%d\n", get_joystick_x());
-		
-    }
+  while (1) {
+    adc_start_conversion();
+  }
 }
 
 void sram_test() {

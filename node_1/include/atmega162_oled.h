@@ -13,6 +13,10 @@
     #define EXTERN extern
 #endif
 
+void write_c(uint8_t command);
+
+void write_d(uint8_t command);
+
 void oled_init();
 
 void oled_reset();
@@ -25,7 +29,7 @@ void oled_goto_column(uint8_t column);
 
 void oled_clear_line(uint8_t line);
 
-void oled_pos(uint8_t row_column);
+void oled_pos(uint8_t line, uint8_t column);
 
 void oled_print(char* character);
 
