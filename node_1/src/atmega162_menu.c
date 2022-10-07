@@ -3,6 +3,12 @@
 #define ATMEGA162_MENU_IMPORT
 #include "../include/atmega162_menu.h"
 
+struct menu {
+    uint8_t menu;
+    uint8_t submenu;
+    uint8_t select;
+} menu;
+
 // menus
 const char* MENU100 PROGMEM = "Menu 1";
 const char* MENU200 PROGMEM = "Menu 2";
@@ -40,7 +46,7 @@ const char** SUBMENU_TABLE PROGMEM = {
     MENU301, MENU302, MENU303 // submenus of menu 3
 };
 
-const uint8_t* MENU_TABLE_SIZE PROGMEM = {
+const int8_t* MENU_TABLE_SIZE PROGMEM = {
     3, // menus
     3, // submenus of menu 1
     3, // submenus of menu 2
@@ -48,16 +54,56 @@ const uint8_t* MENU_TABLE_SIZE PROGMEM = {
 };
 
 void* MENU_FUNCTION_TABLE PROGMEM = {
-    menu101, menu102, menu103, // submenus of menu 1
-    menu201, menu202, menu203, // submenus of menu 2
-    menu301, menu302, menu303  // submenus of menu 3
+    menu100, menu200, menu300, // menu
+    back, menu102, menu103, // submenus of menu 1
+    back, menu202, menu203, // submenus of menu 2
+    back, menu302, menu303  // submenus of menu 3
 };
 
 void menu101() {
     
 }
 
+void back() {
+    menu.select = menu.previous;
+}
+
+uint8_t get_menu_index(uint8_t menu, uint8_t submenu) {
+	uint8_t p = 0; //points to menu in table of function pointer 
+	for(uint8_t i = 0; i < (menu - 1); i++) {
+		p += pgm_read_byte(&MENU_TABLE_SIZE[i + 1]);
+	}
+	return p + submenu - 1;
+}
+
 void menu_loop() {
-    pgm_read_word(&MENU_TABLE_SIZE[0]); // 3
+    uint8_t menu_index = 0;
+    while 1 {
+        if (joystick.direction == UP) {
+            if (--menu.select < 0) {
+                menu.select = /*MENU_TABLE_SIZE[]*/ - 1; // wrap around
+            }
+        } else if (joystick.direction == DOWN) {
+            if (++menu.select > /*MENU_TABLE_SIZE[]*/) {
+                menu.select = 0; // wrap around
+            }
+        }
+
+        if (joystick_button_read()) {
+            pgm_read_word(&MENU_FUNCTION_TABLE[get_menu_index(menu.menu, menu.submenu)])();
+            // call function
+            //MENU_FUNCTION_TABLE[menu_index][current_menu.child]();
+        }
+
+
+        
+        // else if joystick is neutral
+        pgm_read_word(&MENU_TABLE_SIZE[0]); // 3
+        pgm_read_word(&MENU_TABLE_SIZE[0]); // 3
+        // display menu
+        // get input
+        // call function
+    }
+    
 }
    

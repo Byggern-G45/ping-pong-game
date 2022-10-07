@@ -7,6 +7,7 @@
 
 #include <avr/io.h>
 #include <avr/pgmspace.h>
+#include "../include/atmega162_adc.h"
 
 #ifdef ATMEGA162_MENU_IMPORT
     #define EXTERN
