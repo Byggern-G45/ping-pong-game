@@ -2,8 +2,11 @@
 #include "../include/atmega162_sram.h"
 #include "../include/atmega162_adc.h"
 #include "../include/atmega162_oled.h"
+#include "../include/atmega162_menu.h"
 #include <avr/io.h>
 #include <stdio.h>	// Needed for printf
+
+#define MEM_ADD (char*) 0b000000000010
 
 int main() {
 	fdevopen(usart_transmit, usart_receive); // Enable printf to JTAGs
@@ -16,10 +19,11 @@ int main() {
 	oled_reset();
 	printf("\n\r\n\rhello\n\r\n\r");
 	
+	//sram_test();
 	
-	//while (1) {
-		//adc_start_conversion();
-    //}
+  while (1) {
+    adc_start_conversion();
+  }
 }
 
 void sram_test() {
