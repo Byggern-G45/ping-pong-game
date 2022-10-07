@@ -75,6 +75,14 @@ void _calculate_direction(uint8_t* position);
  */
 EXTERN int8_t to_percentage(uint8_t byte);
 
+EXTERN uint8_t get_joystick_x();
+
+EXTERN uint8_t get_joystick_y();
+
+EXTERN uint8_t get_slider_left();
+
+EXTERN uint8_t get_slider_right();
+
 #undef ATMEGA162_ADC_IMPORT
 #undef EXTERN
 #endif

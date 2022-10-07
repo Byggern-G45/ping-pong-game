@@ -111,10 +111,10 @@ uint8_t get_joystick_y() {
 	return joystick.position[1];
 }
 
-int8_t get_slider_left() {
+uint8_t get_slider_left() {
 	return left_slider.position;
 }
 
-int8_t get_slider_right() {
+uint8_t get_slider_right() {
 	return right_slider.position;
 }
