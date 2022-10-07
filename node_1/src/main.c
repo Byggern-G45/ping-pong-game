@@ -6,13 +6,14 @@
 #include <stdio.h>	// Needed for printf
 
 int main() {
-	fdevopen(usart_transmit, usart_receive); // Enable printf to JTAG
+	fdevopen(usart_transmit, usart_receive); // Enable printf to JTAGs
 	usart_init();
 	sram_init();
 	//sram_test();
 	//adc_init();
 	printf("\n\r\n\rhello\n\r\n\r");
 	oled_init();
+	oled_reset();
 	printf("\n\r\n\rhello\n\r\n\r");
 	
 	
