@@ -1,12 +1,12 @@
 
 #define ATMEGA162_OLED_IMPORT
 #include "../include/atmega162_oled.h"
+#include "../include/atmega162_fonts.h"
 
 
 #define OLED_CMD_ADDRESS (volatile char*)0x1000
 #define OLED_DATA_ADDRESS (volatile char*)0x1200
 
-static FILE mystdout = FDEV_SETUP_STREAM(oled_put_char, NULL, _FDEV_SETUP_WRITE);
 
 typedef enum{horizontal, vertical, page} memory_addressing_mode_t;
 
@@ -94,21 +94,17 @@ void oled_pos(uint8_t line, uint8_t column){
 	oled_goto_column(column);
 }
 
-void oled_print(char* character) {
-    
-}
 
-
-int oled_put_char(unsigned char c){
-	uint8_t printChar = c-32;
-	
-	for (int i=0; i < fontSize; i++) {
-		write_data(pgm_read_word(&font_8x8[printChar][i]));
-		position.col += fontSize;
-		oled_is_out_of_bounds();
+void oled_print(char* string){
+	//Loop going through the string and printing the characters.
+	for (int i = 0 ; string[i] != '\0'; i++){
+		//For each character print all the bytes in the font.
+		for (int j = 0 ; j < 8 ; j++){
+			int font_index = string[i] - 32;
+			write_d(pgm_read_byte(&(font8[font_index][j])));
+		}
 	}
-	
-	return 0;
+}
 
 
 

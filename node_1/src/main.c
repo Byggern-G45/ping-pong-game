@@ -17,13 +17,16 @@ int main() {
 	printf("\n\r\n\rhello\n\r\n\r");
 	oled_init();
 	oled_reset();
+	oled_print("------Menu------");
+	oled_pos(1,0);
+	oled_print("> Two player");
+	oled_pos(2,0);
+	oled_print("  Single player");
+	
+	
 	printf("\n\r\n\rhello\n\r\n\r");
 	
 	//sram_test();
-	
-  while (1) {
-    adc_start_conversion();
-  }
 }
 
 void sram_test() {

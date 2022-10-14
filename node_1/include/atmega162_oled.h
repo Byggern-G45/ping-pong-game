@@ -31,7 +31,7 @@ void oled_clear_line(uint8_t line);
 
 void oled_pos(uint8_t line, uint8_t column);
 
-void oled_print(char* character);
+void oled_print(char* data);
 
 #undef ATMEGA162_OLED_IMPORT
 #undef EXTERN
