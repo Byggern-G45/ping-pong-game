@@ -13,6 +13,14 @@
     #define EXTERN extern
 #endif
 
+char spi_tranceive(char data);
+
+void SPI_init();
+
+void SPI_Transmit(char data);
+
+char SPI_Receive(void);
+
 
 #undef ATMEGA162_SPI_IMPORT
 #undef EXTERN
