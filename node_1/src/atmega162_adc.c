@@ -82,8 +82,8 @@ void _adc_read() {
 
 void _calculate_direction() {
 	uint8_t const MARGIN = 50;
-	uint8_t x = joystick.position[0];
-	uint8_t y = joystick.position[1];
+	uint8_t x = to_percentage(joystick.position[0]);
+	uint8_t y = to_percentage(joystick.position[1]);
 	uint8_t is_horizontal = (y < MARGIN) && (y > -MARGIN);
 	uint8_t is_vertical = (x < MARGIN) && (x > -MARGIN);
 	if ((y > MARGIN) && is_vertical) {
