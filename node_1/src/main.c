@@ -10,10 +10,10 @@ int main() {
 	usart_init();
 	sram_init();
 	adc_init();
-	printf("\n\r\n\rhello\n\r\n\r");
 	
 	
 	while (1) {
 		adc_start_conversion();
+		printf("In main | 	x: %d		y: %d		button: %d\n", joystick.position[0], joystick.position[1], joystick_button_read());
     }
 }

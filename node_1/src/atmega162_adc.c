@@ -3,11 +3,7 @@
 #define ATMEGA162_ADC_IMPORT
 #include "../include/atmega162_adc.h"
 
-#define ADC_ADDRESS (volatile char*)0x1400
-
-joystick_t joystick;
-slider_t left_slider;
-slider_t right_slider;
+#define ADC_ADDRESS (char*)0x1400
 
 static volatile uint8_t conversion_done;
 
@@ -17,6 +13,7 @@ static volatile uint8_t conversion_done;
  */
 ISR(INT2_vect) {
 	_adc_read();
+	printf("In ISR | 	x: %d		y: %d		button: %d		direction: %d\n", joystick.position[0], joystick.position[1], joystick_button_read(), joystick.direction);
 	_calculate_direction();
 	conversion_done = 1;
 }
@@ -61,7 +58,8 @@ void adc_init() {
 
 void _joystick_calibrate() {
 	adc_start_conversion();
-	while (conversion_done == 0);
+	printf("Calibrating joystick");
+	while (conversion_done == 0) printf(".");
 	joystick.correction[0] = joystick.position[0] - 128;
 	joystick.correction[1] = joystick.position[1] - 128;
 }
@@ -74,16 +72,26 @@ void adc_start_conversion() {
 }
 
 void _adc_read() {
-	joystick.position[0] = (uint8_t)(*ADC_ADDRESS);	 // Read ch0 joystick x position
-	joystick.position[1] = (uint8_t)(*ADC_ADDRESS);  // Read ch1 joystock y position
+	uint8_t x = (uint8_t)(*ADC_ADDRESS);	 		 // Read ch0 joystick x position
+	uint8_t y = (uint8_t)(*ADC_ADDRESS);  			 // Read ch1 joystock y position
 	left_slider.position = (uint8_t)(*ADC_ADDRESS);  // Read ch2 slider 1 position
 	right_slider.position = (uint8_t)(*ADC_ADDRESS); // Read ch3 slider 2 position
+	if (0 < x && x < joystick.correction[0]) {
+		joystick.position[0] = 0;					 // If x is within the deadzone, set to 0
+	} else { 
+		joystick.position[0] = x;
+	}
+	if (0 < y && y < joystick.correction[1]) {
+		joystick.position[1] = 0;	 				 // If y is within the deadzone, set to 0
+	} else {
+		joystick.position[1] = y;
+	}
 }
 
 void _calculate_direction() {
 	uint8_t const MARGIN = 50;
-	uint8_t x = to_percentage(joystick.position[0]);
-	uint8_t y = to_percentage(joystick.position[1]);
+	uint8_t x = _to_percentage(joystick.position[0]);
+	uint8_t y = _to_percentage(joystick.position[1]);
 	uint8_t is_horizontal = (y < MARGIN) && (y > -MARGIN);
 	uint8_t is_vertical = (x < MARGIN) && (x > -MARGIN);
 	if ((y > MARGIN) && is_vertical) {
@@ -99,26 +107,10 @@ void _calculate_direction() {
 	}
 }
 
-int8_t to_percentage(uint8_t byte) {
+int8_t _to_percentage(uint8_t byte) {
     return byte*200/255 - 100; // Maps 0-255 to -100-100
 }
 
 uint8_t joystick_button_read() {
 	return (PINB & (1<<PB0)); // Return 1 if button is pressed, 0 if not
-}
-
-uint8_t get_joystick_x() {
-	return joystick.position[0];
-}
-
-uint8_t get_joystick_y() {
-	return joystick.position[1];
-}
-
-uint8_t get_slider_left() {
-	return left_slider.position;
-}
-
-uint8_t get_slider_right() {
-	return right_slider.position;
 }
