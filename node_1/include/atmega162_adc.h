@@ -65,7 +65,7 @@ void _joystick_calibrate();
  * 
  * @param position The position of the joystick in percentage
  */
-void _calculate_direction(uint8_t* position);
+void _calculate_direction();
 
 /**
  * @brief Maps a value between 0-255 to 0-100

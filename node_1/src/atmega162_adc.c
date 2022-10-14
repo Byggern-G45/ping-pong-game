@@ -17,6 +17,7 @@ static volatile uint8_t conversion_done;
  */
 ISR(INT2_vect) {
 	_adc_read();
+	_calculate_direction();
 	conversion_done = 1;
 }
 
@@ -79,16 +80,19 @@ void _adc_read() {
 	right_slider.position = (uint8_t)(*ADC_ADDRESS); // Read ch3 slider 2 position
 }
 
-void _calculate_direction(uint8_t* position) {
-	uint8_t is_horizontal = (position[1] < 50) && (position[1] > -50);
-	uint8_t is_vertical = (position[0] < 50) && (position[0] > -50);
-	if ((position[1] > 50) && is_vertical) {
+void _calculate_direction() {
+	uint8_t const MARGIN = 50;
+	uint8_t x = joystick.position[0];
+	uint8_t y = joystick.position[1];
+	uint8_t is_horizontal = (y < MARGIN) && (y > -MARGIN);
+	uint8_t is_vertical = (x < MARGIN) && (x > -MARGIN);
+	if ((y > MARGIN) && is_vertical) {
 		joystick.direction = UP;
-	} else if ((position[1] < -50) && is_vertical) {
+	} else if ((y < -MARGIN) && is_vertical) {
 		joystick.direction = DOWN;
-	} else if ((position[0] > 50) && is_horizontal) {
+	} else if ((x > MARGIN) && is_horizontal) {
 		joystick.direction = RIGHT;
-	} else if ((position[0] < -50) && is_horizontal) {
+	} else if ((x < -MARGIN) && is_horizontal) {
 		joystick.direction = LEFT;
 	} else {
 		joystick.direction = NEUTRAL;
