@@ -5,13 +5,6 @@
 #include <avr/io.h>
 #include <stdio.h>	// Needed for printf
 
-<<<<<<< Updated upstream
-int main() {
-	fdevopen(usart_transmit, usart_receive); // Enable printf to JTAG
-	usart_init();
-	sram_init();
-	adc_init();
-=======
 
 #define RESET 0b11000000 //Resets internal registers to default state, set Configuration mode.
 #define READ 0b00000011 //Read data from register beginning at selected address.
@@ -66,7 +59,6 @@ int main() {
 	atmega162_usart_init();
 	// atmega162_sram_init();
 	// atmega162_joystick_init();
->>>>>>> Stashed changes
 	printf("\n\r\n\rhello\n\r\n\r");
 	printf("SPI_init\n\r");
 	SPI_init();
@@ -143,11 +135,6 @@ void mcp2515_init() {
 	
 
 	
-<<<<<<< Updated upstream
-	while (1) {
-		adc_start_conversion();
-    }
-=======
 	// Set the MCP2515 into configuration mode
 	// mcp2515_bit_modify(MCP_CANCTRL, 0xE0, 0x80);
 	// // Set the baud rate to 500kbps
@@ -156,5 +143,4 @@ void mcp2515_init() {
 	// mcp2515_bit_modify(MCP_CNF3, 0xFF, 0x02);
 	// // Set the MCP2515 into normal mode
 	// mcp2515_bit_modify(MCP_CANCTRL, 0xE0, 0x00);
->>>>>>> Stashed changes
 }
