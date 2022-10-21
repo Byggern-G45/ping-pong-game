@@ -3,7 +3,7 @@
 #define ATMEGA162_ADC_IMPORT
 #include "../include/atmega162_adc.h"
 
-#define ADC_ADDRESS (char*)0x1400
+#define ADC_ADDRESS (volatile char*)0x1400
 
 static volatile uint8_t conversion_done;
 
@@ -12,10 +12,8 @@ static volatile uint8_t conversion_done;
  * 	  	  Triggers on rising edge of READY signal.
  */
 ISR(INT2_vect) {
-	_adc_read();
-	printf("In ISR | 	x: %d		y: %d		button: %d		direction: %d\n", joystick.position[0], joystick.position[1], joystick_button_read(), joystick.direction);
-	_calculate_direction();
-	conversion_done = 1;
+	
+	
 }
 
 /**
@@ -23,6 +21,11 @@ ISR(INT2_vect) {
  * 		  Triggers on rising edge of PB0.
  */
 ISR(INT1_vect) {
+	_adc_read();
+	printf("In ISR | 	x: %d		y: %d		s: %d		b: %d		button: %d		direction: %d\n", joystick.position[0], joystick.position[1], left_slider.position, right_slider.position, joystick_button_read(), joystick.direction);
+	_calculate_direction();
+	conversion_done = 1;
+	
 	
 }
 
@@ -66,17 +69,20 @@ void _joystick_calibrate() {
 
 void adc_start_conversion() {
 	if (conversion_done) { 	// If conversion is done, start new conversion
-		*ADC_ADDRESS = 0x0; // ADC is hardwired, so we do not care about the value
+		volatile char *ext_ram = (char *) 0x1400;
+		ext_ram[0] = 0x00;
 		conversion_done = 0;
 	}	
 }
 
 void _adc_read() {
-	uint8_t x = (uint8_t)(*ADC_ADDRESS);	 		 // Read ch0 joystick x position
-	uint8_t y = (uint8_t)(*ADC_ADDRESS);  			 // Read ch1 joystock y position
-	left_slider.position = (uint8_t)(*ADC_ADDRESS);  // Read ch2 slider 1 position
-	right_slider.position = (uint8_t)(*ADC_ADDRESS); // Read ch3 slider 2 position
-	if (0 < x && x < joystick.correction[0]) {
+	volatile char *ext_ram = (char *) 0x1400;
+	joystick.position[0] = ext_ram[1];	 		 // Read ch0 joystick x position
+	joystick.position[1] = ext_ram[2];  			 // Read ch1 joystock y position
+	left_slider.position = ext_ram[3];  // Read ch2 slider 1 position
+	right_slider.position = ext_ram[4]; // Read ch3 slider 2 position
+
+	/*if (0 < x && x < joystick.correction[0]) {
 		joystick.position[0] = 0;					 // If x is within the deadzone, set to 0
 	} else { 
 		joystick.position[0] = x;
@@ -86,6 +92,7 @@ void _adc_read() {
 	} else {
 		joystick.position[1] = y;
 	}
+	*/
 }
 
 void _calculate_direction() {

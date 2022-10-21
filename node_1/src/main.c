@@ -45,6 +45,6 @@ int main() {
 	
 	while (1) {
 		adc_start_conversion();
-		printf("In main | 	x: %d		y: %d		button: %d\n", joystick.position[0], joystick.position[1], joystick_button_read());
+		//printf("In main | 	x: %d		y: %d		button: %d\n", joystick.position[0], joystick.position[1], joystick_button_read());
     }
 }
