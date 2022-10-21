@@ -55,26 +55,92 @@
 #define Mode_mask 0b11100000 //Mask for mode register
 #define Mode_data 0b00000000 //Data for mode register
 
-
+/**
+ * @brief Initializes and writes testdata to MCP2515
+ */
 void mcp_init();
+
+/**
+ * @brief Resets MCP2515
+ */
 
 void mcp_reset();
 
+
+/**
+ * @brief Writes data to register in MCP2515
+ * @param address 
+ * @param data 
+ */
+
 void mcp_write(char address, char data);
+
+/**
+ * @brief Reads data from register in MCP2515
+ * @param address 
+ * @return char 
+ */
 
 char mcp_read(char address);
 
+/**
+ * @brief Writes data to transmit buffer in MCP2515
+ * @param address 
+ * @param data 
+ */
+
 void mcp_rts(char buffer);
+
+/**
+ * @brief Modify bits in register in MCP2515
+ * 
+ * @param address 
+ * @param mask 
+ * @param data 
+ */
 
 void mcp_bit_modify(char address, char mask, char data);
 
+/**
+ * @brief Reads status from MCP2515
+ * 
+ * @return char 
+ */
+
 char mcp_read_status();
+
+/**
+ * @brief Reads RX status from MCP2515
+ * 
+ */
 
 void mcp_rx_status();
 
+/**
+ * @brief Reads RX buffer from MCP2515
+ * 
+ * @param buffer 
+ * @param startpoint 
+ * @return char 
+ */
+
 char mcp_read_rx_buffer(char buffer, char startpoint);
 
+/**
+ * @brief Writes data to transmit buffer in MCP2515
+ * 
+ * @param buffer 
+ * @param startpoint 
+ * @param data 
+ */
 void mcp_load_tx_buffer(char buffer, char startpoint, char data);
+
+/**
+ * @brief Reads TX buffer from MCP2515
+ * 
+ * @param buffer 
+ * @param startpoint 
+ */
 
 void mcp_read_tx_buffer(char buffer, char startpoint);
 
