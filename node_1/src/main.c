@@ -51,7 +51,7 @@ int main() {
 	printf("\n\n");
 	
 	
-	while (1); 
+	while (1);
 	// 	atmega162_joystick_start_conversion();
     // }
 }
