@@ -8,7 +8,6 @@
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
-#include <stdio.h>
 
 #ifdef ATMEGA162_ADC_IMPORT
     #define EXTERN
