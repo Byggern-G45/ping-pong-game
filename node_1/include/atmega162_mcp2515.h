@@ -18,7 +18,7 @@
     #define EXTERN extern
 #endif
 
-#if 1
+#if 0
   #define debugging(a) printf a
 #else
   #define debugging(a) (void)0
@@ -55,6 +55,9 @@
 #define Mode_mask 0b11100000 //Mask for mode register
 #define Mode_data 0b00000000 //Data for mode register
 
+#define TXB0REG 0b00110001 //TXB0 Extended Identifier Register (EID8:EID0)
+
+
 /**
  * @brief Initializes and writes testdata to MCP2515
  */
@@ -63,7 +66,6 @@ void mcp_init();
 /**
  * @brief Resets MCP2515
  */
-
 void mcp_reset();
 
 
@@ -72,7 +74,6 @@ void mcp_reset();
  * @param address 
  * @param data 
  */
-
 void mcp_write(char address, char data);
 
 /**
@@ -80,7 +81,6 @@ void mcp_write(char address, char data);
  * @param address 
  * @return char 
  */
-
 char mcp_read(char address);
 
 /**
@@ -88,47 +88,37 @@ char mcp_read(char address);
  * @param address 
  * @param data 
  */
-
 void mcp_rts(char buffer);
 
 /**
  * @brief Modify bits in register in MCP2515
- * 
  * @param address 
  * @param mask 
  * @param data 
  */
-
 void mcp_bit_modify(char address, char mask, char data);
 
 /**
  * @brief Reads status from MCP2515
- * 
  * @return char 
  */
-
 char mcp_read_status();
 
 /**
  * @brief Reads RX status from MCP2515
- * 
  */
-
-void mcp_rx_status();
+char mcp_read_rx_status();
 
 /**
  * @brief Reads RX buffer from MCP2515
- * 
  * @param buffer 
  * @param startpoint 
  * @return char 
  */
-
 char mcp_read_rx_buffer(char buffer, char startpoint);
 
 /**
  * @brief Writes data to transmit buffer in MCP2515
- * 
  * @param buffer 
  * @param startpoint 
  * @param data 
@@ -137,11 +127,9 @@ void mcp_load_tx_buffer(char buffer, char startpoint, char data);
 
 /**
  * @brief Reads TX buffer from MCP2515
- * 
  * @param buffer 
  * @param startpoint 
  */
-
 void mcp_read_tx_buffer(char buffer, char startpoint);
 
 

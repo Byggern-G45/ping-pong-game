@@ -91,79 +91,78 @@ void mcp_rts(char buffer){
 	int byte = SPI_Receive();
 	int byte2 = SPI_Receive();
 	PORTB |= (1<<PD4);
-    if (byte == byte2)
-    {
-	switch (byte & 0b11000000){
-		case 00:
-		printf("No RX message\n\r");
-		break;
-		case 01:
-		printf("Message in buffer 0\n\r");
-		break;
-		case 10:
-		printf("Message in buffer 1\n\r");
-		break;
-		case 11:
-		printf("Message in both buffers\n\r");
-		break;
-	}
+    if (byte == byte2) {
+		switch (byte & 0b11000000){
+			case 0b00:
+			printf("No RX message\n\r");
+			break;
+			case 0b01:
+			printf("Message in buffer 0\n\r");
+			break;
+			case 0b10:
+			printf("Message in buffer 1\n\r");
+			break;
+			case 0b11:
+			printf("Message in both buffers\n\r");
+			break;
+		}
 
-	switch (byte & 0b00011000){
-		case 00:
-		printf("Message is standard\n\r");
-		break;
-		case 01:
-		printf("Message is standard remote\n\r");
-		break;
-		case 10:
-		printf("Message is extended\n\r");
-		break;
-		case 11:
-		printf("Message is extended remote\n\r");
-		break;
-	}
+		switch (byte & 0b00011000){
+			case 0b00:
+			printf("Message is standard\n\r");
+			break;
+			case 0b01:
+			printf("Message is standard remote\n\r");
+			break;
+			case 0b10:
+			printf("Message is extended\n\r");
+			break;
+			case 0b11:
+			printf("Message is extended remote\n\r");
+			break;
+		}
 
-	switch (byte & 0b00000111){
-		case 000:
-		printf("RXF0\n\r");
-		break;
-		case 001:
-		printf("RXF1\n\r");
-		break;
-		case 010:
-		printf("RXF2\n\r");
-		break;
-		case 011:
-		printf("RXF3\n\r");
-		break;
-		case 100:
-		printf("RXF4\n\r");
-		break;
-		case 101:
-		printf("RXF5\n\r");
-		break;
-		case 110:
-		printf("RXF0 rollover to RXB0\n\r");
-		break;
-		case 111:
-		printf("RXF1 rollover to RXB1\n\r");
-		break;
-	}
-    return byte;
-    }
-    else {
+		switch (byte & 0b00000111){
+			case 0b000:
+			printf("RXF0\n\r");
+			break;
+			case 0b001:
+			printf("RXF1\n\r");
+			break;
+			case 0b010:
+			printf("RXF2\n\r");
+			break;
+			case 0b011:
+			printf("RXF3\n\r");
+			break;
+			case 0b100:
+			printf("RXF4\n\r");
+			break;
+			case 0b101:
+			printf("RXF5\n\r");
+			break;
+			case 0b110:
+			printf("RXF0 rollover to RXB0\n\r");
+			break;
+			case 0b111:
+			printf("RXF1 rollover to RXB1\n\r");
+			break;
+		}
+    	return byte;
+    } else {
         debugging(("Status: %x not equal %x\n\r", byte, byte2));
         return 0;
     }
  }
 
-void mcp2515_init() {
+void mcp_init() {
 	
 	mcp_reset();
 	mcp_read_status();
     mcp_bit_modify(Mode_address, Mode_mask, Loopback_mode);
 	mcp_read_status();
 	
+	/*
 	mcp_read(Mode_address);
 	
 	mcp_read(0x0f);
@@ -208,7 +207,7 @@ void mcp2515_init() {
 
 	
 
-	
+	*/
 	// Set the MCP2515 into configuration mode
 	// mcp2515_bit_modify(MCP_CANCTRL, 0xE0, 0x80);
 	// // Set the baud rate to 500kbps
