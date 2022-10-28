@@ -6,29 +6,6 @@
 #include <avr/io.h>
 #include <stdio.h>	// Needed for printf
 
-#define MEM_ADD (char*) 0b000000000010
-
-int main() {
-	fdevopen(usart_transmit, usart_receive); // Enable printf to JTAGs
-	usart_init();
-	sram_init();
-	//sram_test();
-	//adc_init();
-	printf("\n\r\n\rhello\n\r\n\r");
-	oled_init();
-	oled_reset();
-	oled_print("------Menu------");
-	oled_pos(1,0);
-	oled_print("> Two player");
-	oled_pos(2,0);
-	oled_print("  Single player");
-	
-	
-	printf("\n\r\n\rhello\n\r\n\r");
-	
-	//sram_test();
-}
-
 void sram_test() {
 	volatile char *ext_ram = (char *) 0x1800;
 	uint16_t ext_ram_size = 0x800;
@@ -57,4 +34,19 @@ void sram_test() {
 		}
 	}
 	printf("SRAM test completed with \n%4d errors in write phase and \n%4d errors in retrievial phase \n",write_errors,retrivial_errors);
+}
+
+int main() {
+	fdevopen(usart_transmit, usart_receive); // Enable printf to JTAGs
+	usart_init();
+	sram_init();
+	sram_test();
+	adc_init();
+	
+	printf("\n\r\n\rhello\n\r\n\r");
+	
+	while (1) {
+		adc_start_conversion();
+		//printf("In main | 	x: %d		y: %d		direction: %d\n", joystick.position[0], joystick.position[1], joystick.direction);
+    }
 }
