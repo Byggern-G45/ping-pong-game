@@ -26,9 +26,10 @@ int main() {
 	tx_msg.data[3] = 'l';
 	tx_msg.data[4] = 'o';
 	tx_msg.data[5] = '\0';
-	
+
 	can_message_send(&tx_msg);
 
+	// Remove this after
 	printf("\n\n");
 	printf("CTRL:			%x\n", mcp_read(TXB0REG - 1));
 	printf("STORED ID:      %x%x\n", mcp_read(TXB0REG) << 3, mcp_read(TXB0REG + 1) >> 5);
@@ -38,6 +39,8 @@ int main() {
         printf("%c", mcp_read(TXB0REG + 5 + i));
     }  
     printf("\n\n");
+
+	mcp_rts(RTS_BUFFER0); // Remove this after
 
 	
 	rx_msg = can_message_receive();

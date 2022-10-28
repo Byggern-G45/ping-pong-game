@@ -21,11 +21,11 @@ void can_message_send(can_message_t* msg) {
     for (uint8_t i = 0; i < msg->length; i++) {
         mcp_load_tx_buffer(TX_BUFFER0, TX_BUFFER_FROMBOTTOM, msg->data[i]); // Data
     }
-    mcp_rts(RTS_BUFFER0);
+    //mcp_rts(RTS_BUFFER0); // Uncomment this after
 }
 
 can_message_t can_message_receive() {
-    mcp_read_rx_status();
+    //mcp_read_rx_status();
     can_message_t msg;
     msg.id = mcp_read_rx_buffer(RX_BUFFER0, RX_BUFFER_FROMBOTTOM) << 3;
     msg.id |= mcp_read_rx_buffer(RX_BUFFER0, RX_BUFFER_FROMBOTTOM) >> 5;
