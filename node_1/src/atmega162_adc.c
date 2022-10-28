@@ -5,19 +5,15 @@
 
 #define ADC_ADDRESS (volatile char*)0x1400
 
-joystick_t joystick;
-slider_t left_slider;
-slider_t right_slider;
-
-static volatile uint8_t conversion_done;
+volatile uint8_t conversion_done;
 
 /**
  * @brief Interrupt service routine for ADC conversion complete.
  * 	  	  Triggers on rising edge of READY signal.
  */
 ISR(INT2_vect) {
-	_adc_read();
-	conversion_done = 1;
+	
+	
 }
 
 /**
@@ -25,9 +21,11 @@ ISR(INT2_vect) {
  * 		  Triggers on rising edge of PB0.
  */
 ISR(INT1_vect) {
-	for (uint8_t i = 0; i <= 254; i++) {
-		printf("HELG!\n");
-	}	
+	_adc_read();
+	_calculate_direction();
+	conversion_done = 1;
+	
+	
 }
 
 /**
@@ -35,9 +33,7 @@ ISR(INT1_vect) {
  * 		  Triggers on rising edge of PB1.
  */
 ISR(INT0_vect) {
-	for (uint8_t i = 0; i <= 254; i++) {
-		printf("TISS!\n");
-	}
+
 }
 
 void adc_init() {
@@ -64,57 +60,58 @@ void adc_init() {
 
 void _joystick_calibrate() {
 	adc_start_conversion();
-	while (conversion_done == 0);
-	joystick.correction[0] = joystick.position[0] - 128;
-	joystick.correction[1] = joystick.position[1] - 128;
+	while(!conversion_done);
+	joystick.correction[0] = joystick.position[0] + 1; // Add 1 to avoid jitter
+	joystick.correction[1] = joystick.position[1] + 1; // Add 1 to avoid jitter
 }
 
 void adc_start_conversion() {
 	if (conversion_done) { 	// If conversion is done, start new conversion
-		*ADC_ADDRESS = 0x0; // ADC is hardwired, so we do not care about the value
+		*ADC_ADDRESS = 0x00;
 		conversion_done = 0;
 	}	
 }
 
 void _adc_read() {
-	joystick.position[0] = (uint8_t)(*ADC_ADDRESS);	 // Read ch0 joystick x position
-	joystick.position[1] = (uint8_t)(*ADC_ADDRESS);  // Read ch1 joystock y position
-	left_slider.position = (uint8_t)(*ADC_ADDRESS);  // Read ch2 slider 1 position
-	right_slider.position = (uint8_t)(*ADC_ADDRESS); // Read ch3 slider 2 position
-	/* // This is not working properly
-	if (joystick.position[0] < joystick.correction[0]) {
-		joystick.position[0] = 0;
-	} else {
-		joystick.position[0] -= joystick.correction[0]; // Subtract correction
+	uint8_t y = *ADC_ADDRESS;  			  // Read ch1 joystock y position
+	uint8_t x = *ADC_ADDRESS;  			  // Read ch0 joystick x position
+	left_slider.position = *ADC_ADDRESS;  // Read ch2 slider 1 position
+	right_slider.position = *ADC_ADDRESS; // Read ch3 slider 2 position
+	if (127 < x && x <= joystick.correction[0]) {
+		joystick.position[0] = 128;		  // If x is within the deadzone, set to middle
+	} else { 
+		joystick.position[0] = x;
 	}
-	if (joystick.position[1] < joystick.correction[1]) {
-		joystick.position[1] = 0;
+	if (127 < y && y <= joystick.correction[1]) {
+		joystick.position[1] = 128;	 	  // If y is within the deadzone, set to middle
 	} else {
-		joystick.position[1] -= joystick.correction[1]; // Subtract correction
+		joystick.position[1] = y;
 	}
-	*/
 }
 
-int8_t to_percentage(uint8_t byte) {
+void _calculate_direction() {
+	uint8_t const MARGIN = 50;
+	int8_t x = _to_percentage(joystick.position[0]);
+	int8_t y = _to_percentage(joystick.position[1]);
+	uint8_t is_horizontal = (y < MARGIN) && (y > -MARGIN);
+	uint8_t is_vertical = (x < MARGIN) && (x > -MARGIN);
+	if ((y > MARGIN) && is_vertical) {
+		joystick.direction = UP;
+	} else if ((y < -MARGIN) && is_vertical) {
+		joystick.direction = DOWN;
+	} else if ((x > MARGIN) && is_horizontal) {
+		joystick.direction = RIGHT;
+	} else if ((x < -MARGIN) && is_horizontal) {
+		joystick.direction = LEFT;
+	} else {
+		joystick.direction = NEUTRAL;
+	}
+}
+
+int8_t _to_percentage(uint8_t byte) {
     return byte*200/255 - 100; // Maps 0-255 to -100-100
 }
 
 uint8_t joystick_button_read() {
 	return (PINB & (1<<PB0)); // Return 1 if button is pressed, 0 if not
-}
-
-uint8_t get_joystick_x() {
-	return joystick.position[0];
-}
-
-uint8_t get_joystick_y() {
-	return joystick.position[1];
-}
-
-int8_t get_slider_left() {
-	return left_slider.position;
-}
-
-int8_t get_slider_right() {
-	return right_slider.position;
 }

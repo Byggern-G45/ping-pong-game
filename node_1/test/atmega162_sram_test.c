@@ -1,15 +1,7 @@
-#include <avr/io.h>
-#include <stdio.h>	// Needed for printf
-#include "../include/atmega162_usart.h"
-#include "../include/atmega162_sram.h"
+/* atmega162_sram_test.c -- See atmega162_sram_test.h for info */
 
-int main() {	
-	atmega162_sram_init();
-	atmega162_usart_init();
-	fdevopen(atmega162_usart_transmit, atmega162_usart_receive); // Enable printf to JTAG
-	sram_test();
-	while (1);
-}
+#define ATMEGA162_SRAM_TEST_IMPORT
+#include "../test/atmega162_sram_test.h"
 
 void sram_test() {
 	volatile char *ext_ram = (char *) 0x1800;

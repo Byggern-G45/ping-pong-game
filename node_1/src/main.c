@@ -21,8 +21,8 @@ int main() {
 	printf("MPC2515_INITED\n\r");
 	mcp2515_init();
 	printf("MPC2515_DONE\n\r");
-	
-	
+	printf("\n\r\n\rhello\n\r\n\r");
+
 	// while (1) {
 	// 	atmega162_joystick_start_conversion();
     // }
