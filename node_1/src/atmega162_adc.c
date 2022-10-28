@@ -5,7 +5,7 @@
 
 #define ADC_ADDRESS (volatile char*)0x1400
 
-static volatile uint8_t conversion_done;
+volatile uint8_t conversion_done;
 
 /**
  * @brief Interrupt service routine for ADC conversion complete.
@@ -22,7 +22,6 @@ ISR(INT2_vect) {
  */
 ISR(INT1_vect) {
 	_adc_read();
-	printf("In ISR | 	x: %d		y: %d		s: %d		b: %d		button: %d		direction: %d\n", joystick.position[0], joystick.position[1], left_slider.position, right_slider.position, joystick_button_read(), joystick.direction);
 	_calculate_direction();
 	conversion_done = 1;
 	
@@ -61,44 +60,40 @@ void adc_init() {
 
 void _joystick_calibrate() {
 	adc_start_conversion();
-	printf("Calibrating joystick");
-	while (conversion_done == 0) printf(".");
-	joystick.correction[0] = joystick.position[0] - 128;
-	joystick.correction[1] = joystick.position[1] - 128;
+	while(!conversion_done);
+	joystick.correction[0] = joystick.position[0] + 1; // Add 1 to avoid jitter
+	joystick.correction[1] = joystick.position[1] + 1; // Add 1 to avoid jitter
 }
 
 void adc_start_conversion() {
 	if (conversion_done) { 	// If conversion is done, start new conversion
-		volatile char *ext_ram = (char *) 0x1400;
-		ext_ram[0] = 0x00;
+		*ADC_ADDRESS = 0x00;
 		conversion_done = 0;
 	}	
 }
 
 void _adc_read() {
-	volatile char *ext_ram = (char *) 0x1400;
-	joystick.position[0] = ext_ram[1];	 		 // Read ch0 joystick x position
-	joystick.position[1] = ext_ram[2];  			 // Read ch1 joystock y position
-	left_slider.position = ext_ram[3];  // Read ch2 slider 1 position
-	right_slider.position = ext_ram[4]; // Read ch3 slider 2 position
-
-	/*if (0 < x && x < joystick.correction[0]) {
-		joystick.position[0] = 0;					 // If x is within the deadzone, set to 0
+	uint8_t y = *ADC_ADDRESS;  			  // Read ch1 joystock y position
+	uint8_t x = *ADC_ADDRESS;  			  // Read ch0 joystick x position
+	left_slider.position = *ADC_ADDRESS;  // Read ch2 slider 1 position
+	right_slider.position = *ADC_ADDRESS; // Read ch3 slider 2 position
+	if (127 < x && x <= joystick.correction[0]) {
+		joystick.position[0] = 128;		  // If x is within the deadzone, set to middle
 	} else { 
 		joystick.position[0] = x;
 	}
-	if (0 < y && y < joystick.correction[1]) {
-		joystick.position[1] = 0;	 				 // If y is within the deadzone, set to 0
+	if (127 < y && y <= joystick.correction[1]) {
+		joystick.position[1] = 128;	 	  // If y is within the deadzone, set to middle
 	} else {
 		joystick.position[1] = y;
 	}
-	*/
+	printf("joystick x: %d, y: %d		correction x: %d, y: %d\n", joystick.position[0], joystick.position[1], joystick.correction[0], joystick.correction[1]);
 }
 
 void _calculate_direction() {
 	uint8_t const MARGIN = 50;
-	uint8_t x = _to_percentage(joystick.position[0]);
-	uint8_t y = _to_percentage(joystick.position[1]);
+	int8_t x = _to_percentage(joystick.position[0]);
+	int8_t y = _to_percentage(joystick.position[1]);
 	uint8_t is_horizontal = (y < MARGIN) && (y > -MARGIN);
 	uint8_t is_vertical = (x < MARGIN) && (x > -MARGIN);
 	if ((y > MARGIN) && is_vertical) {

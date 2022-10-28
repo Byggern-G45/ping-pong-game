@@ -29,7 +29,7 @@ typedef enum {
  */
 typedef struct {
 	volatile uint8_t position[2];
-	volatile int8_t correction[2];
+	volatile uint8_t correction[2];
     volatile direction_t direction;
 } joystick_t;
 
