@@ -24,6 +24,9 @@
   #define debugging(a) (void)0
 #endif
 
+#define MCP_FIRST_BYTE 0
+#define MCP_BYTE       1
+#define MCP_LAST_BYTE  2
 
 #define RESET 0b11000000 //Resets internal registers to default state, set Configuration mode.
 #define READ 0b00000011 //Read data from register beginning at selected address.
@@ -115,7 +118,7 @@ char mcp_read_rx_status();
  * @param startpoint 
  * @return char 
  */
-char mcp_read_rx_buffer(char buffer, char startpoint);
+char mcp_read_rx_buffer(char buffer, char startpoint, uint8_t state);
 
 /**
  * @brief Writes data to transmit buffer in MCP2515
@@ -123,7 +126,7 @@ char mcp_read_rx_buffer(char buffer, char startpoint);
  * @param startpoint 
  * @param data 
  */
-void mcp_load_tx_buffer(char buffer, char startpoint, char data);
+void mcp_load_tx_buffer(char buffer, char startpoint, char data, uint8_t state);
 
 /**
  * @brief Reads TX buffer from MCP2515

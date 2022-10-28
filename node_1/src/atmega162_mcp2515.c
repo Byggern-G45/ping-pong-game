@@ -57,36 +57,43 @@ char mcp_read_status(){
     }
 }
 
-char mcp_read_rx_buffer(char buffer, char startpoint){
+char mcp_read_rx_buffer(char buffer, char startpoint, uint8_t state){ // TODO: does not work yet
 	char address = READ_RX_BUFFER;
-	address |= (buffer << 2) | (startpoint << 1);
-	PORTB &= ~(1<<PD4);
-	SPI_Transmit(address);
+	if (state == MCP_FIRST_BYTE) {
+		address |= (buffer << 2) | (startpoint << 1);
+		PORTB &= ~(1<<PD4);
+		SPI_Transmit(address);
+	}
 	int byte = SPI_Receive();
-	PORTB |= (1<<PD4);
+	if (state == MCP_LAST_BYTE) {
+		PORTB |= (1<<PD4);
+	}
 	debugging(("RXBUFFER: %x from %x \n\r", byte, address));
 	return byte;
 }
 
-void mcp_load_tx_buffer(char buffer, char startpoint, char data){
+void mcp_load_tx_buffer(char buffer, char startpoint, char data, uint8_t state){
 	char address = LOAD_TX_BUFFER;
-	address |= (buffer << 2) | (startpoint << 1);
-	PORTB &= ~(1<<PD4);
-	SPI_Transmit(address);
+	if (state == MCP_FIRST_BYTE) {
+		address |= (buffer << 2) | (startpoint << 1);
+		PORTB &= ~(1<<PD4);
+		SPI_Transmit(address);
+	}
 	SPI_Transmit(data);
-	PORTB |= (1<<PD4);
-	debugging(("RXBUFFER: %x from %x \n\r", data, address));
+	if (state == MCP_LAST_BYTE) {
+		PORTB |= (1<<PD4);
+	}
+	debugging(("TXBUFFER: %x from %x \n\r", data, address));
 }
 
 void mcp_rts(char buffer){
-	char address = RTS;
-	address |= (buffer << 1);
+	char address = RTS | buffer;
 	PORTB &= ~(1<<PD4);
 	SPI_Transmit(address);
 	PORTB |= (1<<PD4);
 }
  char mcp_read_rx_status(){
-	PORTB &= ~(1<<PD4);
+	PORTB &= ~(1<<PD4); 
 	SPI_Transmit(RX_STATUS);
 	int byte = SPI_Receive();
 	int byte2 = SPI_Receive();
