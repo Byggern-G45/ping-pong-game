@@ -87,7 +87,6 @@ void _adc_read() {
 	} else {
 		joystick.position[1] = y;
 	}
-	printf("joystick x: %d, y: %d		correction x: %d, y: %d\n", joystick.position[0], joystick.position[1], joystick.correction[0], joystick.correction[1]);
 }
 
 void _calculate_direction() {
