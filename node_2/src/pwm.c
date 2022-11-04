@@ -1,4 +1,6 @@
 #define PWM_IMPORT
+#include "sam.h"
+#include "sam3x8e.h"
 #include "../include/pwm.h"
 
 void pwm_init(){

@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <sam.h>
 
+
 #include "../include/printf-stdarg.h"
 #include "../include/can_controller.h"
 
@@ -37,13 +38,15 @@ void CAN0_Handler( void )
 		if(can_sr & CAN_SR_MB1)  //Mailbox 1 event
 		{
 			can_receive(&message, 1);
-			printf("CAN0 interrupt: Mailbox 1 event\n\r");
+			convert_to_pwm(message.data[0]);
+			//printf("CAN0 interrupt: Mailbox 1 event\n\r");
 		}
 		else if(can_sr & CAN_SR_MB2) //Mailbox 2 event
 		
 		{
 			can_receive(&message, 2);
-			printf("CAN0 interrupt: Mailbox 2 event\n\r");
+			convert_to_pwm(message.data[0]);
+			//printf("CAN0 interrupt: Mailbox 2 event\n\r");
 		}
 		else
 		{
