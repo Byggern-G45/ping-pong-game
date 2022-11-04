@@ -1,7 +1,7 @@
 /*
  * uart.c
  *
- * Author: Gustav O. Often and Eivind H. Jølsgard
+ * Author: Gustav O. Often and Eivind H. Jï¿½lsgard
  *
  * For use in TTK4155 Embedded and Industrial Computer Systems Design
  * NTNU - Norwegian University of Science and Technology
@@ -9,8 +9,8 @@
  */ 
 #include <stdint.h>
 
-#include "sam.h"
-#include "uart.h"
+#include <sam.h>
+#include "../include/uart.h"
 
 //Ringbuffer for receiving multiple characters
 uart_ringbuffer rx_buffer;
@@ -27,15 +27,15 @@ void configure_uart(void)
 {
 	uint32_t ul_sr;
 
-/*
-Initialize UART ring buffer as empty
-*/
-rx_buffer.head=0;
-rx_buffer.tail=0;
-
-/*
-Initialize UART communication
-*/
+	/*
+	Initialize UART ring buffer as empty
+	*/
+	rx_buffer.head=0;
+	rx_buffer.tail=0;
+	
+	/*
+	Initialize UART communication
+	*/
 	// Pin configuration
 	// Disable interrupts on Uart receive (URXD) and transmit (UTXD) pins
 	PIOA->PIO_IDR = PIO_PA8A_URXD | PIO_PA9A_UTXD;
@@ -59,7 +59,7 @@ Initialize UART communication
 	UART->UART_CR = UART_CR_RSTRX | UART_CR_RSTTX | UART_CR_RXDIS | UART_CR_TXDIS;
 
 	// Set the baudrate
-	UART->UART_BRGR = 547; // MCK / 16 * x = BaudRate (write x into UART_BRGR)  
+	UART->UART_BRGR = UART_CD_VALUE; // MCK / 16 * x = BaudRate (write x into UART_BRGR)  
 
 	// No parity bits
 	UART->UART_MR = UART_MR_PAR_NO | UART_MR_CHMODE_NORMAL;	

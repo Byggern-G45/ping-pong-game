@@ -1,7 +1,7 @@
 /*
  * uart.h
  *
- * Author: Gustav O. Often and Eivind H. Jølsgard
+ * Author: Gustav O. Often and Eivind H. Jï¿½lsgard
  *
  * For use in TTK4155 Embedded and Industrial Computer Systems Design
  * NTNU - Norwegian University of Science and Technology
@@ -14,7 +14,18 @@
 #define UART_H_
 
 #include <stdint.h>
+
+#ifndef MCK
+#define MCK 84000000UL
+#endif
+#ifndef UART_BAUD_RATE
+#define UART_BAUD_RATE 9600UL
+#endif
+
 #define UART_RINGBUFFER_SIZE 64
+#define UART_CD_VALUE (MCK/(16UL*UART_BAUD_RATE))
+//#define UART_CD_VALUE 153600
+//#define UART_CD_VALUE 9600
 /*
  * Ringbuffer for receiving characters from  
  */
