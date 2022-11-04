@@ -16,7 +16,7 @@
 #include <stdint.h>
 
 #ifndef MCK
-#define MCK 64000000UL
+#define MCK 84000000UL
 #endif
 #ifndef UART_BAUD_RATE
 #define UART_BAUD_RATE 9600UL
@@ -24,7 +24,8 @@
 
 #define UART_RINGBUFFER_SIZE 64
 #define UART_CD_VALUE (MCK/(16UL*UART_BAUD_RATE))
-
+//#define UART_CD_VALUE 153600
+//#define UART_CD_VALUE 9600
 /*
  * Ringbuffer for receiving characters from  
  */
