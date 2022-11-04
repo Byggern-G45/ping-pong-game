@@ -49,14 +49,17 @@
 #define READ_STATUS 0b10100000 //Quick polling command that reads several status bits for transmit and receive functions.
 #define RX_STATUS 0b10110000 //Quick polling command that indicates filter match and message type (standard, extended and/or remote) of received message.
 #define BIT_MODIFY 0b00000101 
-#define Normal_Operation_mode 0b000
-#define Sleep_mode 0b001 //= Set Sleep mode
+#define Normal_mode 0b00000000
+#define Sleep_mode 0b00100000 //= Set Sleep mode
 #define Loopback_mode 0b01000000 //= Set Loopback mode
-#define Listen_mode 0b011 //= Set Listen-Only mode
-#define Configuration_mode 0b100 //= Set Configuration mode
-#define Mode_address 0x0e //upper data for mode register, next selects bits to be modified
+#define Listen_mode 0b01100000 //= Set Listen-Only mode
+#define Configuration_mode 0b10000000 //= Set Configuration mode
+#define Mode_address 0x0f //upper data for mode register, next selects bits to be modified
 #define Mode_mask 0b11100000 //Mask for mode register
 #define Mode_data 0b00000000 //Data for mode register
+#define CNF1 0x2a //Address for CNF1 register
+#define CNF2 0x29 //Address for CNF2 register
+#define CNF3 0x28 //Address for CNF3 register
 
 #define TXB0REG 0b00110001 //TXB0 Extended Identifier Register (EID8:EID0)
 
@@ -134,6 +137,31 @@ void mcp_load_tx_buffer(char buffer, char startpoint, char data, uint8_t state);
  * @param startpoint 
  */
 void mcp_read_tx_buffer(char buffer, char startpoint);
+
+/**
+ * @brief Sets normal mode in MCP2515 
+ */
+
+void mcp_normal_mode();
+
+/**
+ * @brief Sets sleep mode in MCP2515 
+ */
+
+void mcp_sleep_mode();
+
+/**
+ * @brief Sets loopback mode in MCP2515 
+ */
+
+void mcp_loopback_mode();
+
+/**
+ * @brief Sets listen mode in MCP2515 
+ */
+
+void mcp_listen_mode();
+
 
 
 

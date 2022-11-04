@@ -28,7 +28,7 @@ void SPI_Transmit(char data){
 
 
 char SPI_Receive(void){
-	SPDR = 0xFF;
+	SPDR = 0x00;
 	while(!(SPSR & (1<<SPIF)));
 	/* Return data register */
 	return SPDR;

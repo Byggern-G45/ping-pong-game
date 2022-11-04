@@ -31,10 +31,22 @@ void can_init();
 void can_message_send(can_message_t* msg);
 
 /**
+ * @brief Send CAN message with minimal overhead
+ * @param msg CAN message to send
+ */
+void can_message_psend(can_message_t* msg);
+
+/**
  * @brief Receive CAN message
  * @return can_message_t received CAN message
  */
 can_message_t can_message_receive();
+
+/**
+ * @brief TODO! Receive CAN message minimal overhead
+ * @return can_message_t received CAN message
+ */
+can_message_t can_message_preceive();
 
 /**
  * @brief Check if CAN message is received
