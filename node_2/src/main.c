@@ -5,6 +5,12 @@
 #include "../include/can_controller.h"
 #include "../include/can_interrupt.h"
 
+#include <sam.h>
+#include <sam3x8e.h>
+#include "../include/pwm.h"
+//#include "uart.h"
+//#include <utim>
+
 #define BAUD_RATE_CAN 	125000UL
 #define BAUD_RATE_UART 	9600UL
 #define MCK 			84000000UL
@@ -14,8 +20,10 @@
 //#define PROPAG          (T_PRS/T_CSC - 1)
 //#define PHASE1          5
 
+
 int main(void) {
 	/* Initialize the SAM system */
+  //configure_uart();
 	SystemInit();
 	configure_uart();
 
@@ -76,5 +84,29 @@ int main(void) {
 		// 	msg_rx.data[7]
 		// );
 		// CAN0_Handler();
-	}	
+	}
+}
+
+void IR_init(){
+	
+}
+
+bool goal_reg(){
+	
+}
+
+void excercise7_blinkLED_init(){
+	PIOA->PIO_OER |= 1<<20;
+	PIOA->PIO_OER |= 1<<19;
+	PIOA->PIO_PER |= 1<<20;
+	PIOA->PIO_PER |= 1<<19;
+}
+
+void excercise7_blink_led(){
+	PIOA->PIO_SODR |= 1<<20;
+	PIOA->PIO_SODR |= 1<<19;
+	delay(1000);
+	PIOA->PIO_CODR |= 1<<20;
+	PIOA->PIO_CODR |= 1<<19;
+	delay(1000);
 }
