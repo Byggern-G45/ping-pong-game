@@ -12,48 +12,121 @@
 
 
 
+void menu(menu_state){
+	switch (menu_state)
+	{
+	case NEUTRAL:
+		oled_home();
+		oled_print("-> SRAM test      ");
+		oled_pos(1,0);
+		oled_print("   ADC test      ");
+		oled_pos(2,0);
+		oled_print("   CAN test    ");
+		oled_pos(3,0);
+		oled_print("   Start game    ");
+		uint8_t button = joystick_button_read();
+		if (button == 0) {
+			oled_reset();
+			oled_print("Testing SRAM...");
+			uint8_t errors = sram_test();
+			oled_pos(1,0);
+			if (errors == 0 ){
+			oled_print("0 errors");
+			}
+			else if (errors < 1000){
+				oled_print("1000 > errors");
+			}
+			else {
+				oled_print("1000 < errors");
+			}
+			
+			oled_pos(2,0);
+			oled_print("detected");
+			_delay_ms(30000);
+		}
+		break;
+	case UP:
+		oled_home();
+		oled_print("   SRAM test  ");
+		oled_pos(1,0);
+		oled_print("-> ADC test  ");
+		oled_pos(2,0);
+		oled_print("   CAN test  ");
+		oled_pos(3,0);
+		oled_print("   Start game  ");
+		button = joystick_button_read();
+		if (button == 0) {
+			oled_reset();
+			oled_print("ADC test...");
+			oled_pos(1,0);
+			oled_print("Doing nothing :)");
+			_delay_ms(30000);
+		}
+		break;
+	case RIGHT:
+		oled_home();
+		oled_print("   SRAM test  ");
+		oled_pos(1, 0);
+		oled_print("   ADC test   ");
+		oled_pos(2, 0);
+		oled_print("-> CAN test   ");
+		oled_pos(3, 0);
+		oled_print("   Start game   ");
+		button = joystick_button_read();
+		if (button == 0) {
+			oled_reset();
+			oled_print("CAN test...");
+			oled_pos(1,0);
+			oled_print("Doing nothing :)");
+			_delay_ms(30000);
+		}
+		break;
+	case DOWN:
+		
+		oled_home();
+		oled_print("   SRAM test"  );
+		oled_pos(1,0);
+		oled_print("   ADC test"  );
+		oled_pos(2,0);
+		oled_print("   CAN test"  );
+		oled_pos(3,0);
+		oled_print("-> Start game"  );
+		button = joystick_button_read();
+		if (button == 0) {
+			oled_reset();
+			oled_print("Starting game...");
+			oled_pos(1,0);
+			oled_print("Joystick bound");
+			oled_pos(2,0);
+			oled_print("to game");
+			while(1){
+			adc_start_conversion();
+			button = joystick_button_read();
+			can_message_t tx_msg;
 
+			tx_msg.id = 0x7ff;
+			tx_msg.length = 3;
+			tx_msg.data[0] = joystick.position[0];
+			tx_msg.data[1] = joystick.position[1];
+			tx_msg.data[2] = button;
+
+			can_message_psend(&tx_msg);
+			}
+		}
+		break;
+	default:
+		break;
+	}
+}
 
 int main() {	
 	fdevopen(usart_transmit, usart_receive); // Enable printf to JTAG
 	usart_init();
 	can_init();
 	sram_init();
+	oled_init();
 	adc_init();
-	
-	// can_message_t rx_msg;
-	// can_message_t tx_msg;
-	
 
-
-
-	// can_message_psend(&tx_msg);
-
-	// printf("%x \n", mcp_read(0x0e));
-	// printf("%x \n", mcp_read(0x0f));
-
-	// printf("\n\n+n########################################\n");
-	// printf("SENT ID:    	%x\n", tx_msg.id);
-	// printf("SENT LENGTH:	%d\n", tx_msg.length);
-	// printf("SENT DATA:  	");
-	// for (uint8_t i = 0; i < tx_msg.length; i++) {
-	// 	printf("%d	", tx_msg.data[i]);
-	// }
-	// printf("\n");
-	// printf("\n########################################\n");
-
-
-	// rx_msg = can_message_receive();
-
-	// printf("\n########################################\n");
-	// printf("RECEIVED ID:    %x\n", rx_msg.id);
-	// printf("RECEIVED LENGTH:%d\n", rx_msg.length);
-	// printf("RECEIVED DATA:  ");
-	// for (uint8_t i = 0; i < rx_msg.length; i++) {
-	// 	printf("%x", rx_msg.data[i]);
-	// }
-	// printf("\n");
-	// printf("\n########################################\n");
 
 
 
@@ -63,20 +136,10 @@ int main() {
 	
 	
 	while (1){
-
-		//_delay_ms(100);
-
+		menu(joystick.direction);
 		adc_start_conversion();
-		can_message_t tx_msg;
-		// can_message_t rx_msg;
-
-	tx_msg.id = 0x7ff;
-	tx_msg.length = 2;
-	tx_msg.data[0] = joystick.position[0];
-	tx_msg.data[1] = joystick.position[1];
 
 
-	can_message_psend(&tx_msg);
 
 
 
@@ -98,3 +161,8 @@ int main() {
 	
     }
 }
+
+
+
+
+	

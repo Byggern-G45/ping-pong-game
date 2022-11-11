@@ -170,19 +170,19 @@ void mcp_loopback_mode(){
 
 void mcp_normal_mode(){
 	mcp_reset();
-	// mcp_bit_modify(CNF1, 0xff, 0b00000011);
-	// mcp_bit_modify(CNF2, 0xff, 0b10110101);
-	// mcp_bit_modify(CNF3, 0x03, 0x01);
+	mcp_bit_modify(CNF1, 0xff, 0b00000011);
+	mcp_bit_modify(CNF2, 0xff, 0b10110101);
+	mcp_bit_modify(CNF3, 0x03, 0x01);
 
-	mcp_bit_modify(CNF3, 0b00000111, 0x01);		//PS2: 2*Tq
+	// mcp_bit_modify(CNF3, 0b00000111, 0x01);		//PS2: 2*Tq
 
-	mcp_bit_modify(CNF2, 0b00000111, 0x05);		//PRSEG: 6*Tq
-	mcp_bit_modify(CNF2, 0b00111000, 0x06<<3);	//PHSEG1: 7*Tq
-	mcp_bit_modify(CNF2, 0b01000000, 0x00<<6);	//SAM: 0 Busline sample once
-	mcp_bit_modify(CNF2, 0b10000000, 0x01<<7);	//BTLMODE: Length of PS2 determined by PHSEG2 bits in CNF3
+	// mcp_bit_modify(CNF2, 0b00000111, 0x05);		//PRSEG: 6*Tq
+	// mcp_bit_modify(CNF2, 0b00111000, 0x06<<3);	//PHSEG1: 7*Tq
+	// mcp_bit_modify(CNF2, 0b01000000, 0x00<<6);	//SAM: 0 Busline sample once
+	// mcp_bit_modify(CNF2, 0b10000000, 0x01<<7);	//BTLMODE: Length of PS2 determined by PHSEG2 bits in CNF3
 
-	mcp_bit_modify(CNF1, 0b11000000, 0x00<<6);	//SJW: 1*Tq
-	mcp_bit_modify(CNF1, 0b00111111, 0x03);		//BRP: Tq=8/F_osc=95ns
+	// mcp_bit_modify(CNF1, 0b11000000, 0x00<<6);	//SJW: 1*Tq
+	// mcp_bit_modify(CNF1, 0b00111111, 0x03);		//BRP: Tq=8/F_osc=95ns
 
 	mcp_bit_modify(0b01100000, 0b01100000, 0x00<<5);	//RXM: Receive any message
 
