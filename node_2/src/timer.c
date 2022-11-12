@@ -1,4 +1,4 @@
-#define _IMPORT
+
 #include "sam.h"
 #include "sam3x8e.h"
 #include "../include/timer.h"

@@ -18,7 +18,7 @@ void pi_regulator_init(int8_t* joystick_ptr/*, int8_t* encoder_ptr*/) {
     //pi_inputs.encoder_ptr = encoder_ptr;
 }
 
-void TC0_handler() {
+void TC0_Handler() {
     printf("TC0_handler\t");
     if (TC0->TC_CHANNEL[1].TC_SR & TC_SR_CPCS) {
         static int integral_term = 0;
