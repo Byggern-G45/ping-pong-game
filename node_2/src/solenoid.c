@@ -3,8 +3,6 @@
 #include "sam3x8e.h"
 #include "../include/solenoid.h"
 
-uint8_t solenoid_activated = 0;
-
 void solenoid_init(){
 	PIOC->PIO_PER |= PIO_PER_P13; //Enable PIO control of solenoid pin
 	PIOC->PIO_OER |= PIO_OER_P13; //Set solenoid pin as output
@@ -13,6 +11,7 @@ void solenoid_init(){
 
 
 void solenoid(uint8_t input){
+    static uint8_t solenoid_activated = 0;
 	if(input == 1){
 		PIOC->PIO_CODR |= PIO_CODR_P13; //Set solenoid pin low
 		solenoid_activated = 0;
