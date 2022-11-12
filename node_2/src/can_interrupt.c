@@ -39,6 +39,8 @@ void CAN0_Handler( void )
 		{
 			can_receive(&message, 1);
 			convert_to_pwm(message.data[0]);
+			solenoid(message.data[2]);
+			
 			//printf("CAN0 interrupt: Mailbox 1 event\n\r");
 		}
 		else if(can_sr & CAN_SR_MB2) //Mailbox 2 event
@@ -46,6 +48,8 @@ void CAN0_Handler( void )
 		{
 			can_receive(&message, 2);
 			convert_to_pwm(message.data[0]);
+			solenoid(message.data[2]); //Hvem av boksene kommer data på?
+			
 			//printf("CAN0 interrupt: Mailbox 2 event\n\r");
 		}
 		else
