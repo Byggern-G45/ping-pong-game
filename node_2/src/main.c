@@ -5,6 +5,7 @@
 #include "../include/can_controller.h"
 #include "../include/can_interrupt.h"
 #include "../include/pwm.h"
+#include "../include/motor.h"
 
 volatile int* test = 0;
 
@@ -22,6 +23,7 @@ int main(void) {
 	SystemInit();
 	configure_uart();
 	pwm_init();
+	motor_init();
 
 	if (can_init_def_tx_rx_mb(0x00290561)) {
 		printf("CAN init failed\n\r");
@@ -30,11 +32,13 @@ int main(void) {
 	CAN_MESSAGE msg_rx;
 
 	convert_to_pwm(255);
+	motor_set_speed(0);
 	
 	
 	while (1) {
+		
 		//__disable_irq();
-		//printf("Status: %d\t", can_receive(&msg_rx, 1));
+		printf("Position: %d\n", motor_read_position());
 		//printf("ID: 	%d\t", msg_rx.id);
 		//printf("Length: %d\t", msg_rx.data_length);
 		//printf("Data: 	%d%d\10\13", msg_rx.data[0], msg_rx.data[1]);

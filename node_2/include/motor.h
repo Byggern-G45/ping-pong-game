@@ -8,6 +8,6 @@
 
 void motor_init();
 void motor_set_speed(int speed);
-void motor_set_direction(int direction);
+int motor_read_position();
 
 #endif /* CAN_INTERRUPT_H_ */
