@@ -20,4 +20,7 @@ void timer_init(void){
 
 	TC0->TC_CHANNEL[1].TC_CCR |= TC_CCR_SWTRG| //Start timer software trigger
                                  TC_CCR_CLKEN; //Enable clock
+
+	TC0->TC_CHANNEL[1].TC_IER |= TC_IER_CPCS; //Enable interrupt on RC Compare
+	NVIC_EnableIRQ(TC1_IRQn); //Enable interrupt in NVIC
 }
