@@ -12,7 +12,7 @@
 #define OUT_ENCODER_MIN  -100 // Mapped value when all the way to the right
 #define OUT_ENCODER_MAX   100 // Mapped value when all the way to the left
 
-#define IN_SPEED_MIN     -100 // Value of encoder when all the way to the right
+#define IN_SPEED_MIN     0 // Value of encoder when all the way to the right
 #define IN_SPEED_MAX      100 // Value of encoder when all the way to the left
 #define OUT_SPEED_MIN       0 // Mapped value when all the way to the right
 #define OUT_SPEED_MAX   65535 // Mapped value when all the way to the left
