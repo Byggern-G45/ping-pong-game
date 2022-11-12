@@ -16,8 +16,16 @@
 
 #include "../include/printf-stdarg.h"
 #include "../include/can_controller.h"
+#include "../include/pwm.h"
+#include "../include/solenoid.h"
+#include "../include/regulator.h"
 
 #define DEBUG_INTERRUPT 0
+
+
+void can_interrupt_init(void) {
+	
+}
 
 /**
  * \brief CAN0 Interrupt handler for RX, TX and bus error interrupts
@@ -35,6 +43,8 @@ void CAN0_Handler( void )
 	if(can_sr & (CAN_SR_MB1 | CAN_SR_MB2) )//Only mailbox 1 and 2 specified for receiving
 	{
 		CAN_MESSAGE message;
+		pi_regulator_init(&message.data[1]);
+
 		if(can_sr & CAN_SR_MB1)  //Mailbox 1 event
 		{
 			can_receive(&message, 1);

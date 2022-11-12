@@ -20,7 +20,7 @@ void solenoid(uint8_t input){
 		PIOC->PIO_SODR |= PIO_SODR_P13; //Set solenoid pin high
 		solenoid_activated = 1;
 		for (int i = 0; i < 100; i++){
-			asm(nop);
+			asm("nop");
 		}
 	}
 	

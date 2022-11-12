@@ -14,7 +14,6 @@
 
 void timer_init(void);
 
-
 #undef TIMER_IMPORT
 #undef EXTERN
 #endif

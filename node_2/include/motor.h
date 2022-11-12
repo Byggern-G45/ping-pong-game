@@ -35,4 +35,4 @@ void motor_set_speed(int16_t speed);
  */
 int8_t motor_read_position();
 
-#endif /* CAN_INTERRUPT_H_ */
+#endif /* MOTOR_H_ */

@@ -20,5 +20,4 @@ void timer_init(void){
 
 	TC0->TC_CHANNEL[1].TC_CCR |= TC_CCR_SWTRG| //Start timer software trigger
                                  TC_CCR_CLKEN; //Enable clock
-
 }
