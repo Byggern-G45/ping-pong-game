@@ -24,6 +24,7 @@ int main(void) {
 	configure_uart();
 	pwm_init();
 	motor_init();
+	solenoid_init();
 
 	if (can_init_def_tx_rx_mb(0x00290561)) {
 		printf("CAN init failed\n\r");
