@@ -22,5 +22,5 @@ void timer_init(void){
                                  TC_CCR_CLKEN; //Enable clock
 
 	TC0->TC_CHANNEL[1].TC_IER |= TC_IER_CPCS; //Enable interrupt on RC Compare
-	NVIC_EnableIRQ(TC1_IRQn); //Enable interrupt in NVIC
+	NVIC_EnableIRQ(TC0_IRQn); //Enable interrupt in NVIC
 }
