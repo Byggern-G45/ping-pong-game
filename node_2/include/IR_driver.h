@@ -4,6 +4,8 @@
 
 #ifndef IR_H
 #define IR_H
+#include "sam.h"
+
 
 void ADC_init();
 
