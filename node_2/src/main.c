@@ -33,7 +33,7 @@ int main(void) {
 	CAN_MESSAGE msg_rx;
 
 	convert_to_pwm(255);
-	motor_set_speed(0);
+	motor_set_speed(100);
 	
 	
 	while (1) {
