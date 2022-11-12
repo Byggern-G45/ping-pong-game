@@ -29,12 +29,12 @@ int main(void) {
 	}
 
 	//convert_to_pwm(255);
-	motor_set_speed(-1);
+	motor_set_speed(100);
 	
 	
 	while (1) {
 		
-		printf("Encoder: %d\n", motor_read_position());
+		//printf("Encoder: %d\n", motor_read_position());
 		//__disable_irq();
 		//printf("Position: %d\n", motor_read_position());
 		//printf("ID: 	%d\t", msg_rx.id);

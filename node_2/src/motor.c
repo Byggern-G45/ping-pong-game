@@ -60,8 +60,9 @@ void motor_set_speed(int16_t speed) {
     } else {
         PIOD->PIO_CODR |= PIO_CODR_P10; // Motor direction right
     }
-    DACC->DACC_CDR = (speed - IN_SPEED_MIN)*(OUT_SPEED_MAX - OUT_SPEED_MIN)/
-                     (IN_SPEED_MAX - IN_SPEED_MIN) + OUT_SPEED_MIN; // Map speed
+    uint16_t mapped_speed = (speed - IN_SPEED_MIN)*(OUT_SPEED_MAX - OUT_SPEED_MIN)/
+                            (IN_SPEED_MAX - IN_SPEED_MIN) + OUT_SPEED_MIN; // Map speed
+    DACC->DACC_CDR = mapped_speed; // Set speed
 }
 
 int8_t motor_read_position() {
