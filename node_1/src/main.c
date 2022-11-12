@@ -24,6 +24,8 @@ void menu(menu_state){
 		oled_print("   CAN test    ");
 		oled_pos(3,0);
 		oled_print("   Start game    ");
+		oled_pos(4, 0);
+		oled_print("   Print helg   ");
 		uint8_t button = joystick_button_read();
 		if (button == 0) {
 			oled_reset();
@@ -43,6 +45,7 @@ void menu(menu_state){
 			oled_pos(2,0);
 			oled_print("detected");
 			_delay_ms(30000);
+			oled_reset();	
 		}
 		break;
 	case UP:
@@ -61,6 +64,7 @@ void menu(menu_state){
 			oled_pos(1,0);
 			oled_print("Doing nothing :)");
 			_delay_ms(30000);
+			oled_reset();
 		}
 		break;
 	case RIGHT:
@@ -72,6 +76,8 @@ void menu(menu_state){
 		oled_print("-> CAN test   ");
 		oled_pos(3, 0);
 		oled_print("   Start game   ");
+		oled_pos(4, 0);
+		oled_print("   Print helg   ");
 		button = joystick_button_read();
 		if (button == 0) {
 			oled_reset();
@@ -79,6 +85,7 @@ void menu(menu_state){
 			oled_pos(1,0);
 			oled_print("Doing nothing :)");
 			_delay_ms(30000);
+			oled_reset();
 		}
 		break;
 	case DOWN:
@@ -91,6 +98,8 @@ void menu(menu_state){
 		oled_print("   CAN test"  );
 		oled_pos(3,0);
 		oled_print("-> Start game"  );
+		oled_pos(4, 0);
+		oled_print("   Print helg   ");
 		button = joystick_button_read();
 		if (button == 0) {
 			oled_reset();
@@ -107,13 +116,47 @@ void menu(menu_state){
 			tx_msg.id = 0x7ff;
 			tx_msg.length = 3;
 			tx_msg.data[0] = joystick.position[0];
-			tx_msg.data[1] = joystick.position[1];
+			tx_msg.data[1] = _to_percentage(joystick.position[1]);
 			tx_msg.data[2] = button;
 
 			can_message_psend(&tx_msg);
 			}
 		}
 		break;
+	case LEFT:
+		oled_home();
+		oled_print("   SRAM test  ");
+		oled_pos(1, 0);
+		oled_print("   ADC test   ");
+		oled_pos(2, 0);
+		oled_print("   CAN test   ");
+		oled_pos(3, 0);
+		oled_print("   Start game   ");
+		oled_pos(4, 0);
+		oled_print("-> Print helg   ");
+		button = joystick_button_read();
+		if (button == 0) {
+			oled_reset();
+			oled_print("# # ### #    ##");
+			oled_pos(1,0);
+			oled_print("# # #   #   #  ");
+			oled_pos(2,0);
+			oled_print("# # #   #  #   ");
+			oled_pos(3,0);
+			oled_print("### ### #  # ##");
+			oled_pos(4,0);
+			oled_print("# # #   #  #  #");
+			oled_pos(5,0);
+			oled_print("# # #   #   # #");
+			oled_pos(6,0);
+			oled_print("# # #   #   # #");
+			oled_pos(7,0);
+			oled_print("# # ### ###  ##");
+			_delay_ms(30000);
+			oled_reset();
+		}
+		break;
+
 	default:
 		break;
 	}
