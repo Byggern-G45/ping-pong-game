@@ -14,6 +14,7 @@
 
 
 #include "../include/pwm.h"
+#include "../include/solenoid.h"
 
 void CAN0_Handler       ( void );
 

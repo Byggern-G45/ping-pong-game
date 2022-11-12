@@ -5,6 +5,7 @@
 #include "../include/can_controller.h"
 #include "../include/can_interrupt.h"
 #include "../include/pwm.h"
+#include "../include/solenoid.h"
 #include "../include/motor.h"
 
 volatile int* test = 0;
