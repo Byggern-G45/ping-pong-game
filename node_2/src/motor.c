@@ -65,7 +65,7 @@ void motor_set_speed(int16_t speed) {
     DACC->DACC_CDR = mapped_speed; // Set speed
 }
 
-int8_t motor_read_position() {
+uint8_t motor_read_position() {
     PIOD->PIO_CODR |= PIO_CODR_P0;  // !OE low to enable encoder
 
 	PIOD->PIO_CODR |= PIO_CODR_P2;                  // SEL low to get high byte
@@ -79,6 +79,7 @@ int8_t motor_read_position() {
     PIOD->PIO_SODR |= PIO_SODR_P0;  // !OE high to disable encoder
 
     uint16_t position = (high_byte << 8) | low_byte;
+    //printf("Position: %d\n", position);
     return (position - IN_ENCODER_MIN)*(OUT_ENCODER_MAX - OUT_ENCODER_MIN)/
            (IN_ENCODER_MAX - IN_ENCODER_MIN) + OUT_ENCODER_MIN; // Map position
 }

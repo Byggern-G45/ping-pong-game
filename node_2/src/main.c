@@ -5,6 +5,7 @@
 #include "../include/can_controller.h"
 #include "../include/can_interrupt.h"
 #include "../include/pwm.h"
+#include "../include/timer.h"
 #include "../include/solenoid.h"
 #include "../include/motor.h"
 #include "../include/regulator.h"
@@ -22,6 +23,7 @@ int main(void) {
 	SystemInit();
 	configure_uart();
 	pwm_init();
+	timer_init();
 	motor_init();
 	solenoid_init();
 	if (can_init_def_tx_rx_mb(0x00290561)) {
@@ -29,7 +31,7 @@ int main(void) {
 	}
 
 	//convert_to_pwm(255);
-	motor_set_speed(100);
+	//motor_set_speed(-100);
 	
 	
 	while (1) {
