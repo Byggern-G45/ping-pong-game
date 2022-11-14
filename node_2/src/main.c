@@ -23,29 +23,42 @@ int main(void) {
 	SystemInit();
 	configure_uart();
 	pwm_init();
-	timer_init();
 	motor_init();
 	solenoid_init();
+	//timer_init();
+	
 	if (can_init_def_tx_rx_mb(0x00290561)) {
 		printf("CAN init failed\n\r");
 	}
-
-	//convert_to_pwm(255);
-	//motor_set_speed(-100);
 	
 	
 	while (1) {
-		
-		//printf("Encoder: %d\n", motor_read_position());
-		//__disable_irq();
-		//printf("Position: %d\n", motor_read_position());
-		//printf("ID: 	%d\t", msg_rx.id);
-		//printf("Length: %d\t", msg_rx.data_length);
-		//printf("Data: 	%d%d\10\13", msg_rx.data[0], msg_rx.data[1]);
-
-		
-		// convert_to_pwm(msg_rx.data[0]);
-		//convert_to_pwm(msg_rx.data[0]);
-		//__enable_irq();
+		regulate();
 	}
 }
+
+/** 
+ *  -------------------------------------
+ * |                                     |
+ * | White  Purple  Green  Orange  Brown |
+ * |                                     |
+ * | Black  Gray    Blue   Yellow  Red   |
+ * |                                     |
+ *  -------------,       ,---------------
+ *               --------
+ *                  ))
+ *                 ((
+ * 				    ))
+ * 				   ((
+ * 				    ))
+ * 				   ((
+ * 					))
+ *  -------------------------------------
+ * |                                     |
+ * | sol     sol     nc     ir+   photo+ |
+ * |                                     |
+ * | srvsig  srv5v  srvgnd  ir-   photo- |
+ * | 								     |
+ *  -------------,       ,---------------
+ *               --------             
+ */

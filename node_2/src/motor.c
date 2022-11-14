@@ -3,6 +3,12 @@
  */ 
 
 #include "../include/motor.h"
+#include "../include/printf-stdarg.h"
+
+struct corner_values_t {
+    int16_t left;
+    int16_t right;
+} corner_values;
 
 void motor_init() {
     PMC->PMC_PCER0 |= PMC_PCER0_PID13; // Enable clock to bus on PIOC
@@ -51,6 +57,15 @@ void motor_init() {
     PIOD->PIO_SODR |= PIO_SODR_P9;  // Enable motor
 	PIOD->PIO_SODR |= PIO_SODR_P1;  // Disable reset encoder
     PIOD->PIO_CODR |= PIO_CODR_P0;  // Enable encoder
+
+    // motor_set_speed(-100);
+    // for (unsigned int i = 0; i < 10000000; i++) {asm("nop");}
+    // corner_values.left = motor_read_position();
+    // printf("Hello world\n\r");
+
+    // motor_set_speed(100);
+    // for (unsigned int i = 0; i < 10000000; i++) {asm("nop");}
+    // corner_values.right = motor_read_position();
 }
 
 void motor_set_speed(int16_t speed) {
@@ -65,7 +80,7 @@ void motor_set_speed(int16_t speed) {
     DACC->DACC_CDR = mapped_speed; // Set speed
 }
 
-uint8_t motor_read_position() {
+int motor_read_position() {
     PIOD->PIO_CODR |= PIO_CODR_P0;  // !OE low to enable encoder
 
 	PIOD->PIO_CODR |= PIO_CODR_P2;                  // SEL low to get high byte
@@ -79,7 +94,14 @@ uint8_t motor_read_position() {
     PIOD->PIO_SODR |= PIO_SODR_P0;  // !OE high to disable encoder
 
     uint16_t position = (high_byte << 8) | low_byte;
-    //printf("Position: %d\n", position);
-    return (position - IN_ENCODER_MIN)*(OUT_ENCODER_MAX - OUT_ENCODER_MIN)/
-           (IN_ENCODER_MAX - IN_ENCODER_MIN) + OUT_ENCODER_MIN; // Map position
+
+    // if (position > IN_ENCODER_MAX) {
+    //     position = IN_ENCODER_MAX;
+    // } else if (position < IN_ENCODER_MIN) {
+    //     position = IN_ENCODER_MIN;
+    // }
+
+    int mapped_position = (position - IN_ENCODER_MIN)*(OUT_ENCODER_MAX - OUT_ENCODER_MIN)/
+                          (IN_ENCODER_MAX - IN_ENCODER_MIN) + OUT_ENCODER_MIN; // Map position
+    return mapped_position;
 }

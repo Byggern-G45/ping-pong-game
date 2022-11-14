@@ -46,14 +46,10 @@ void CAN0_Handler( void )
 		
 		if(can_sr & CAN_SR_MB1)  //Mailbox 1 event
 		{
-			printf("joystick: %d\t", message.data[1]);
-			//printf("joystick perc: %d\n", message.data[1]*200/255 - 100);
 			pi_regulator_init(&message.data[1]);
 			can_receive(&message, 1);
 			convert_to_pwm(message.data[0]);
 			solenoid(message.data[2]);
-			
-			//printf("CAN0 interrupt: Mailbox 1 event\n\r");
 		}
 		else if(can_sr & CAN_SR_MB2) //Mailbox 2 event
 		
@@ -61,9 +57,7 @@ void CAN0_Handler( void )
 			pi_regulator_init(&message.data[1]);
 			can_receive(&message, 2);
 			convert_to_pwm(message.data[0]);
-			solenoid(message.data[2]); //Hvem av boksene kommer data på?
-			
-			//printf("CAN0 interrupt: Mailbox 2 event\n\r");
+			solenoid(message.data[2]);
 		}
 		else
 		{
