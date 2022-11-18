@@ -1,5 +1,6 @@
 #define PWM_IMPORT
 
+#include "sam.h"
 #include "../include/pwm.h"
 
 void pwm_init(){
