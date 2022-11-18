@@ -116,7 +116,7 @@ void menu(menu_state){
 			tx_msg.id = 0x7ff;
 			tx_msg.length = 3;
 			tx_msg.data[0] = joystick.position[0];
-			tx_msg.data[1] = _to_percentage(joystick.position[1]);
+			tx_msg.data[1] = joystick.position[1];
 			tx_msg.data[2] = button;
 
 			can_message_psend(&tx_msg);
