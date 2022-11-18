@@ -1,9 +1,6 @@
 #define PWM_IMPORT
-#include "sam.h"
-#include "sam3x8e.h"
+
 #include "../include/pwm.h"
-
-
 
 void pwm_init(){
 	PMC -> PMC_PCER1 |= PMC_PCER1_PID36; //Enable clock for PWM

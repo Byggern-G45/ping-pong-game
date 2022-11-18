@@ -14,13 +14,8 @@
 #include <stdint.h>
 
 void pwm_init();
-
 void convert_to_pwm(uint8_t input);
 
-
-#undef PWM_IMPORT
-#undef EXTERN
-#endif
 #undef PWM_IMPORT
 #undef EXTERN
 #endif

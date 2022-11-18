@@ -13,7 +13,6 @@
 #include <stdio.h>
 #include <sam.h>
 
-
 #include "../include/printf-stdarg.h"
 #include "../include/can_controller.h"
 #include "../include/pwm.h"
