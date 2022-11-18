@@ -18,6 +18,9 @@
  */
 EXTERN void sram_init();
 
+/**
+ * @brief Test if external SRAM is working
+ */
 EXTERN uint8_t sram_test();
 
 

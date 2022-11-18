@@ -10,9 +10,7 @@
 #include <util/delay.h>
 #define  F_CPU 4000000UL
 
-
-
-void menu(menu_state){
+void menu(menu_state) {
 	switch (menu_state)
 	{
 	case NEUTRAL:
@@ -32,13 +30,11 @@ void menu(menu_state){
 			oled_print("Testing SRAM...");
 			uint8_t errors = sram_test();
 			oled_pos(1,0);
-			if (errors == 0 ){
-			oled_print("0 errors");
-			}
-			else if (errors < 1000){
+			if (errors == 0 ) {
+			 oled_print("0 errors");
+			} else if (errors < 1000) {
 				oled_print("1000 > errors");
-			}
-			else {
+			} else {
 				oled_print("1000 < errors");
 			}
 			
@@ -109,31 +105,31 @@ void menu(menu_state){
 			oled_pos(2,0);
 			oled_print("to game");
 			flip_bit = 1;
-			while(flip_bit){
-			adc_start_conversion();
-			button = joystick_button_read();
-			can_message_t tx_msg;
+			while(flip_bit) {
+				adc_start_conversion();
+				button = joystick_button_read();
+				can_message_t tx_msg;
 
-			tx_msg.id = 0x7ff;
-			tx_msg.length = 4;
-			tx_msg.data[0] = joystick.position[0];
-			tx_msg.data[1] = joystick.position[1];
-			tx_msg.data[2] = button;
-			tx_msg.data[3] = 0;
+				tx_msg.id = 0x7ff;
+				tx_msg.length = 4;
+				tx_msg.data[0] = joystick.position[0];
+				tx_msg.data[1] = joystick.position[1];
+				tx_msg.data[2] = button;
+				tx_msg.data[3] = 0;
 
-			can_message_psend(&tx_msg);
+				can_message_psend(&tx_msg);
 			}
 			for (uint8_t i = 0; i < 20; i++) {
-			can_message_t tx_msg;
+				can_message_t tx_msg;
 
-			tx_msg.id = 0x7ff;
-			tx_msg.length = 4;
-			tx_msg.data[0] = joystick.position[0];
-			tx_msg.data[1] = joystick.position[1];
-			tx_msg.data[2] = button;
-			tx_msg.data[3] = 1;
+				tx_msg.id = 0x7ff;
+				tx_msg.length = 4;
+				tx_msg.data[0] = joystick.position[0];
+				tx_msg.data[1] = joystick.position[1];
+				tx_msg.data[2] = button;
+				tx_msg.data[3] = 1;
 
-			can_message_psend(&tx_msg);
+				can_message_psend(&tx_msg);
 			}
 		}
 		break;
@@ -184,38 +180,9 @@ int main() {
 	oled_init();
 	adc_init();
 
-
-
-
-
-
-
-	
-	
 	while (1){
 		menu(joystick.direction);
 		adc_start_conversion();
-
-
-
-
-
-
-		
-		//rx_msg = can_message_receive();
-
-	 //printf("\n########################################\n");
-	// printf("%x \n", mcp_read(0x0e));
-	// mcp_read_rx_status();
-	// printf("RECEIVED ID:    %x\n", rx_msg.id);
-	// printf("RECEIVED LENGTH:%d\n", rx_msg.length);
-	// printf("RECEIVED DATA:  ");
-	// for (uint8_t i = 0; i < rx_msg.length; i++) {
-	// 	printf("%d		", rx_msg.data[i]);
-	// }
-	// printf("\n");
-	// printf("\n########################################\n");
-	
     }
 }
 
