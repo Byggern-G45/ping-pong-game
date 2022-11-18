@@ -1,5 +1,9 @@
 #define PWM_IMPORT
+#include "sam.h"
+#include "sam3x8e.h"
 #include "../include/pwm.h"
+
+
 
 void pwm_init(){
 	PMC -> PMC_PCER1 |= PMC_PCER1_PID36; //Enable clock for PWM
@@ -28,3 +32,4 @@ void convert_to_pwm(uint8_t input){
 	duty_cycle = 1559 - diff;
 	REG_PWM_CDTY5 = duty_cycle;
 }
+

@@ -1,38 +1,64 @@
 #include "sam.h"
+#include <sam3x8e.h>
 #include "../include/printf-stdarg.h"
 #include "../include/uart.h"
-#include <sam3x8e.h>
-#include "../include/IR_driver.h"
+#include "../include/can_controller.h"
+#include "../include/can_interrupt.h"
+#include "../include/pwm.h"
+#include "../include/timer.h"
+#include "../include/solenoid.h"
+#include "../include/motor.h"
+#include "../include/regulator.h"
 
-#define BAUD_RATE_UART 9600UL
-#define MCK 84000000UL
+#define BAUD_RATE_CAN 	125000UL
+#define BAUD_RATE_UART 	9600UL
+#define MCK 			84000000UL
+//#define BRP 	 		(MCK/(16UL*BAUD_RATE_CAN) - 1)
+//#define T_CSC           ((BRP + 1UL)⁄MCK)
+//#define T_PRS		    (3*T_CSC)
+//#define PROPAG          (T_PRS/T_CSC - 1)
+//#define PHASE1          5
 
-int main(void){
-    /* Initialize the SAM system */
-    SystemInit();
+int main(void) {
+	SystemInit();
 	configure_uart();
-	ADC_init();
-
-
-    while (1){
-		uint16_t IR_value = get_IR_value();
-		printf("IR value = %d\n", IR_value);
+	pwm_init();
+	motor_init();
+	solenoid_init();
+	//timer_init();
+	
+	if (can_init_def_tx_rx_mb(0x00290561)) {
+		printf("CAN init failed\n\r");
+	}
+	
+	
+	while (1) {
+		regulate();
 	}
 }
 
-
-/*void excercise7_blinkLED_init(){
-	PIOA->PIO_OER |= 1<<20;
-	PIOA->PIO_OER |= 1<<19;
-	PIOA->PIO_PER |= 1<<20;
-	PIOA->PIO_PER |= 1<<19;
-}
-
-void excercise7_blink_led(){
-	PIOA->PIO_SODR |= 1<<20;
-	PIOA->PIO_SODR |= 1<<19;
-	delay(1000);
-	PIOA->PIO_CODR |= 1<<20;
-	PIOA->PIO_CODR |= 1<<19;
-	delay(1000);
-}*/
+/** 
+ *  -------------------------------------
+ * |                                     |
+ * | White  Purple  Green  Orange  Brown |
+ * |                                     |
+ * | Black  Gray    Blue   Yellow  Red   |
+ * |                                     |
+ *  -------------,       ,---------------
+ *               --------
+ *                  ))
+ *                 ((
+ * 				    ))
+ * 				   ((
+ * 				    ))
+ * 				   ((
+ * 					))
+ *  -------------------------------------
+ * |                                     |
+ * | sol     sol     nc     ir+   photo+ |
+ * |                                     |
+ * | srvsig  srv5v  srvgnd  ir-   photo- |
+ * | 								     |
+ *  -------------,       ,---------------
+ *               --------             
+ */
