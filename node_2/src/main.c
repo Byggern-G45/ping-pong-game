@@ -16,7 +16,13 @@ int main(void){
 
     while (1){
 		uint16_t IR_value = get_IR_value();
+		int miss = 0;
 		printf("IR value = %d\n", IR_value);
+		//Check if IR value is above threshold
+		//if(IR_value > 1000){
+		//	miss++;
+		//}
+		//printf("IR value = %d\n", miss);
 	}
 }
 
