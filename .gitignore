@@ -3,6 +3,9 @@
 .vs
 .idea
 
+# SAM
+node_2/Device_Startup/
+
 # Microchip Studio project files
 Debug
 *.atsln
