@@ -15,6 +15,8 @@
     #define EXTERN extern
 #endif
 
+uint8_t flip_bit;
+
 typedef enum {
     LEFT, 
     RIGHT, 

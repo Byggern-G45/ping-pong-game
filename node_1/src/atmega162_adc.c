@@ -11,7 +11,9 @@ volatile uint8_t conversion_done;
  * @brief Interrupt service routine for ADC conversion complete.
  * 	  	  Triggers on rising edge of READY signal.
  */
-//ISR(INT2_vect) {}
+ISR(INT0_vect) {
+	flip_bit = 0;
+}
 
 /**
  * @brief Interrupt service routine for left(?) button press.
@@ -40,9 +42,9 @@ void adc_init() {
 	TCCR3B |= (0<<CS32) | (0<<CS31) | (1<<CS30); // No Clk prescaling	
 	
 	cli();								// Disable global interrupt to hinder unwanted interrupt
-	//MCUCR |= (1<<ISC01) | (1<<ISC00);	// Activate INT0 on rising edge
+	MCUCR |= (1<<ISC01) | (1<<ISC00);	// Activate INT0 on rising edge
 	MCUCR |= (1<<ISC11) | (1<<ISC10);	// Activate INT1 on rising edge
-	GICR |= /*(1<<INT0) |*/ (1<<INT1);		// Enable INT0 and INT1			
+	GICR |= (1<<INT0) |(1<<INT1);		// Enable INT0 and INT1			
 	//EMCUCR |= (1<<ISC2);				// Activate INT2 on rising edge
 	//GICR |= (1<<INT2);					// Enable INT2
 	sei();								// Enable global interrupt

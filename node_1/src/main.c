@@ -108,7 +108,8 @@ void menu(menu_state){
 			oled_print("Joystick bound");
 			oled_pos(2,0);
 			oled_print("to game");
-			while(1){
+			flip_bit = 1;
+			while(flip_bit){
 			adc_start_conversion();
 			button = joystick_button_read();
 			can_message_t tx_msg;
@@ -118,9 +119,20 @@ void menu(menu_state){
 			tx_msg.data[0] = joystick.position[0];
 			tx_msg.data[1] = joystick.position[1];
 			tx_msg.data[2] = button;
+			tx_msg.data[3] = 0;
 
 			can_message_psend(&tx_msg);
 			}
+			can_message_t tx_msg;
+
+			tx_msg.id = 0x7ff;
+			tx_msg.length = 3;
+			tx_msg.data[0] = joystick.position[0];
+			tx_msg.data[1] = joystick.position[1];
+			tx_msg.data[2] = button;
+			tx_msg.data[3] = 1;
+
+			can_message_psend(&tx_msg);
 		}
 		break;
 	case LEFT:
