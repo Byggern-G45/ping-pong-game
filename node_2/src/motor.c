@@ -94,13 +94,6 @@ int motor_read_position() {
     PIOD->PIO_SODR |= PIO_SODR_P0;  // !OE high to disable encoder
 
     uint16_t position = (high_byte << 8) | low_byte;
-
-    // if (position > IN_ENCODER_MAX) {
-    //     position = IN_ENCODER_MAX;
-    // } else if (position < IN_ENCODER_MIN) {
-    //     position = IN_ENCODER_MIN;
-    // }
-
     int mapped_position = (position - IN_ENCODER_MIN)*(OUT_ENCODER_MAX - OUT_ENCODER_MIN)/
                           (IN_ENCODER_MAX - IN_ENCODER_MIN) + OUT_ENCODER_MIN; // Map position
     return mapped_position;

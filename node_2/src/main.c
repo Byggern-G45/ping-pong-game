@@ -14,11 +14,6 @@
 #define BAUD_RATE_CAN 	125000UL
 #define BAUD_RATE_UART 	9600UL
 #define MCK 			84000000UL
-//#define BRP 	 		(MCK/(16UL*BAUD_RATE_CAN) - 1)
-//#define T_CSC           ((BRP + 1UL)⁄MCK)
-//#define T_PRS		    (3*T_CSC)
-//#define PROPAG          (T_PRS/T_CSC - 1)
-//#define PHASE1          5
 
 int main(void) {
 	SystemInit();
