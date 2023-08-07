@@ -9,6 +9,7 @@
 #include "../include/solenoid.h"
 #include "../include/motor.h"
 #include "../include/regulator.h"
+#include "../include/IR_driver.h"
 
 #define BAUD_RATE_CAN 	125000UL
 #define BAUD_RATE_UART 	9600UL
@@ -25,12 +26,11 @@ int main(void) {
 	pwm_init();
 	motor_init();
 	solenoid_init();
-	//timer_init();
+	ADC_init();
 	
 	if (can_init_def_tx_rx_mb(0x00290561)) {
 		printf("CAN init failed\n\r");
 	}
-	
 	
 	while (1) {
 		regulate();

@@ -18,6 +18,9 @@
  */
 EXTERN void sram_init();
 
+EXTERN uint8_t sram_test();
+
+
 #undef ATMEGA162_SRAM_IMPORT
 #undef EXTERN
 #endif

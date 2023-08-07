@@ -13,12 +13,12 @@
 #include <stdio.h>
 #include <sam.h>
 
-
 #include "../include/printf-stdarg.h"
 #include "../include/can_controller.h"
 #include "../include/pwm.h"
 #include "../include/solenoid.h"
 #include "../include/regulator.h"
+#include "../include/IR_driver.h"
 
 #define DEBUG_INTERRUPT 0
 
@@ -46,18 +46,20 @@ void CAN0_Handler( void )
 		
 		if(can_sr & CAN_SR_MB1)  //Mailbox 1 event
 		{
+			
 			pi_regulator_init(&message.data[1]);
 			can_receive(&message, 1);
 			convert_to_pwm(message.data[0]);
 			solenoid(message.data[2]);
+			get_ball_misses(message.data[3]);
 		}
 		else if(can_sr & CAN_SR_MB2) //Mailbox 2 event
-		
 		{
 			pi_regulator_init(&message.data[1]);
 			can_receive(&message, 2);
 			convert_to_pwm(message.data[0]);
 			solenoid(message.data[2]);
+			get_ball_misses(message.data[3]);
 		}
 		else
 		{
